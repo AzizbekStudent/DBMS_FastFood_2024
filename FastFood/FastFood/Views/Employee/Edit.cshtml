@@ -1,0 +1,96 @@
+﻿@model FastFood.DAL.Models.Employee
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Employee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Employee_ID" class="control-label"></label>
+                <input asp-for="Employee_ID" class="form-control" />
+                <span asp-validation-for="Employee_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FName" class="control-label"></label>
+                <input asp-for="FName" class="form-control" />
+                <span asp-validation-for="FName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LName" class="control-label"></label>
+                <input asp-for="LName" class="form-control" />
+                <span asp-validation-for="LName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telephone" class="control-label"></label>
+                <input asp-for="Telephone" class="form-control" placeholder="___-__-___-__-   />
+                <span asp-validation-for="Telephone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Job" class="control-label"></label>
+                <select asp-for="Job" class="form-control">
+                    <option value="admin">Admin</option>
+                    <option value="cook">Cook</option>
+                    <option value="cashier">Cashier</option>
+                </select>
+                <span asp-validation-for="Job" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Salary" class="control-label"></label>
+                <input asp-for="Salary" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Salary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HireDate" class="control-label"></label>
+                <input asp-for="HireDate" class="form-control" />
+                <span asp-validation-for="HireDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" asp-for="Image" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+
+            <div class="EmployeeImage">
+                @if (Model.Image != null && Model.Image.Length > 0)
+                {
+                    string imageBase64 = Convert.ToBase64String(Model.Image);
+                    string imageUrl = $"data:image;base64,{imageBase64}";
+                    <img src="@imageUrl" alt="Employee Image" />
+                }
+                else
+                {
+                    <span>No image available</span>
+                }
+            </div>
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="FullTime" /> @Html.DisplayNameFor(model => model.FullTime)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,100 @@
+﻿@model IEnumerable<FastFood.DAL.Models.Employee>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Job)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Salary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HireDate)
+            </th>
+
+            <!-- this is not needed column
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            -->
+
+            <th>
+                @Html.DisplayNameFor(model => model.FullTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telephone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Salary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HireDate)
+            </td>
+
+            <!--
+            <td>
+                @Html.DisplayFor(modelItem => item.Image)
+            </td>
+            -->
+
+            <td>
+                @Html.DisplayFor(modelItem => item.FullTime)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new {  id=item.Employee_ID  })     |
+                @Html.ActionLink("Details", "Details", new { id = item.Employee_ID  })       |
+                    <!-- @Html.ActionLink("Delete", "Delete", new { id = item.Employee_ID })-->
+
+                @Html.ActionLink("Delete", "Delete", new { id = item.Employee_ID, viewName = "DeleteConfirmed" }, new { @class = "btn btn-danger" })
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
