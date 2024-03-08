@@ -1,0 +1,98 @@
+﻿@model FastFood.DAL.Models.Ingredients
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Ingredients</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ingredient_ID" class="control-label"></label>
+                <input asp-for="ingredient_ID" disabled="true" class="form-control" readonly />
+                <span asp-validation-for="ingredient_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount_in_grams" class="control-label"></label>
+                <input asp-for="Amount_in_grams" class="form-control"  />
+                <span asp-validation-for="Amount_in_grams" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unit" class="control-label"></label>
+                <input asp-for="Unit" class="form-control"  />
+                <span asp-validation-for="Unit" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" asp-for="Image" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input class="form-check-input" type="checkbox" asp-for="IsForVegan.Value" />
+                <label class="form-check-label" asp-for="IsForVegan"> @Html.DisplayNameFor(model => model.IsForVegan)</label>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function ValidationFields() {
+            var amountInput = document.getElementById('Amount_in_grams');
+            var unitInput = document.getElementById('Unit');
+
+            if (amountInput.value.trim() !== '') {
+                unitInput.value = '';
+            } else if (unitInput.value.trim() !== '') {
+                amountInput.value = '';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var amountInput = document.getElementById('Amount_in_grams');
+            var unitInput = document.getElementById('Unit');
+
+            amountInput.addEventListener("input", function () {
+                if (amountInput.value.trim() !== '') {
+                    unitInput.value = '';
+                }
+            });
+
+            unitInput.addEventListener("input", function () {
+                if (unitInput.value.trim() !== '') {
+                    amountInput.value = '';
+                }
+            });
+        });
+
+    </script>
+}

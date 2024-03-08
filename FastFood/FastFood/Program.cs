@@ -16,6 +16,12 @@ builder.Services.AddScoped<IRepository<Employee>>(
        return new EmployeeDapperRepository(_connStr);
    });
 
+builder.Services.AddScoped<IRepository<Ingredients>>(
+   p =>
+   {
+       return new IngredientsDapperRepository(_connStr);
+   });
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
