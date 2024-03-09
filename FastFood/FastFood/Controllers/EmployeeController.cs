@@ -61,21 +61,22 @@ namespace FastFood.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Employee emp, IFormFile image)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                byte[] imageData = null;
+                if (image != null)
                 {
-                    byte[] imageData = null;
-                    if (image != null)
+                    using (var memoryStream = new MemoryStream())
                     {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await image.CopyToAsync(memoryStream);
-                            imageData = memoryStream.ToArray();
-                            emp.Image = imageData;
-                        }
+                        await image.CopyToAsync(memoryStream);
+                        imageData = memoryStream.ToArray();
+                        emp.Image = imageData;
                     }
+                }
 
+
+                if (ModelState.IsValid)
+                {
                     var employee = new Employee
                     {
                         FName = emp.FName,
@@ -93,10 +94,10 @@ namespace FastFood.Controllers
 
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
             }
 
             return View(emp);
@@ -121,19 +122,20 @@ namespace FastFood.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (image != null && image.Length > 0)
                 {
-                    if (image != null && image.Length > 0)
+                    using (var memoryStream = new MemoryStream())
                     {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await image.CopyToAsync(memoryStream);
-                            emp.Image = memoryStream.ToArray();
-                        }
+                        await image.CopyToAsync(memoryStream);
+                        emp.Image = memoryStream.ToArray();
                     }
+                }
 
+
+                if (ModelState.IsValid)
+                {
                     var success = await _EmpRepository.UpdateAsync(emp);
 
                     if (success > 0)
@@ -145,11 +147,12 @@ namespace FastFood.Controllers
                         return BadRequest("Employee update failed.");
                     }
                 }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                    return View(emp);
-                }
+                    
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(emp);
             }
 
             return View(emp);

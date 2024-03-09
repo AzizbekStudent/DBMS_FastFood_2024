@@ -22,6 +22,12 @@ builder.Services.AddScoped<IRepository<Ingredients>>(
        return new IngredientsDapperRepository(_connStr);
    });
 
+builder.Services.AddScoped<IRepository<Menu>>(
+   p =>
+   {
+       return new MenuDapperRepository(_connStr);
+   });
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -46,5 +52,14 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Employee}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "ingredient",
+    pattern: "{controller=Ingredient}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "ingredient",
+    pattern: "{controller=Menu}/{action=Index}/{id?}");
+
 
 app.Run();

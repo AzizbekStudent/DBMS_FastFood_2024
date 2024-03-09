@@ -16,7 +16,7 @@ Create or Alter Procedure udp_Ingredients_Get_By_Id
     @ingredientID Int
 As
 Begin
-    Select Title, Price, Amount_in_grams, Unit, IsForVegan, Image 
+    Select ingredient_ID, Title, Price, Amount_in_grams, Unit, IsForVegan, Image 
 	From Ingredients Where ingredient_ID = @ingredientID
 End
 

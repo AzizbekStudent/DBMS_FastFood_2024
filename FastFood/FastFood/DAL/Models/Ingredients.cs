@@ -13,7 +13,7 @@
 
         public int? Unit { get; set; }
 
-        public bool? IsForVegan { get; set; }
+        public bool IsForVegan { get; set; }
 
         public byte[]? Image { get; set; }
     }

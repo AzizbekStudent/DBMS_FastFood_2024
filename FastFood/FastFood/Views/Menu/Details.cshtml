@@ -1,0 +1,78 @@
+﻿@model FastFood.DAL.Models.Menu
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Menu</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Meal_ID)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Meal_ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Meal_title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Meal_title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Size)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TimeToPrepare)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TimeToPrepare)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+        <dd class = "col-sm-10">
+            <div class="MenuImage">
+                @if (Model.Image != null && Model.Image.Length > 0)
+                {
+                    string imageBase64 = Convert.ToBase64String(Model.Image);
+                    string imageUrl = $"data:image;base64,{imageBase64}";
+                    <img src="@imageUrl" alt="Ingredient Image" />
+                }
+                else
+                {
+                    <span>No image available</span>
+                }
+            </div>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsForVegan)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsForVegan)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Created_Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Created_Date)
+        </dd>
+
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.Meal_ID  }) |
+    <a asp-action="Index">Back to List</a>
+</div>
