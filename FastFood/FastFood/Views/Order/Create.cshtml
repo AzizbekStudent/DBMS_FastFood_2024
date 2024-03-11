@@ -1,0 +1,125 @@
+﻿@model FastFood.DAL.Models.Order
+
+@{
+    ViewData["Title"] = "Create";
+
+    var mealOptions = ViewBag.MealOptions as List<SelectListItem>;
+    if (mealOptions == null)
+    {
+        mealOptions = new List<SelectListItem>();
+    }
+
+    var empOptions = ViewBag.EmployeeOptions as List<SelectListItem>;
+    if (empOptions == null)
+    {
+        empOptions = new List<SelectListItem>();
+    }
+}
+
+<h1>Create</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="order_ID" class="control-label"></label>
+                <input asp-for="order_ID" class="form-control" readonly />
+                <span asp-validation-for="order_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderTime" class="control-label"></label>
+                <input asp-for="OrderTime" id="OrderTime" class="form-control" readonly />
+                <span asp-validation-for="OrderTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeliveryTime" class="control-label"></label>
+                <input asp-for="DeliveryTime" id="DeliveryTime" class="form-control" readonly />
+                <span asp-validation-for="DeliveryTime" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="PaymentStatus" /> @Html.DisplayNameFor(model => model.PaymentStatus)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Meal_ID" class="control-label">Meal</label>
+                <select asp-for="Meal_ID" id="Meal_ID" class="form-control">
+                    <option value="">Select Meal</option>
+                    @foreach (var item in mealOptions)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="Meal_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" id="Amount" class="form-control" type="number" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalCost" class="control-label"></label>
+                <input asp-for="TotalCost" id="TotalCost" class="form-control" readonly />
+                <span asp-validation-for="TotalCost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Prepared_By" class="control-label">Prepared By</label>
+                <select asp-for="Prepared_By" class="form-control">
+                    <option value="">Select Employee</option>
+                    @foreach (var item in empOptions)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="Prepared_By" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        function updateTotalCost() {
+            var mealId = $("#Meal_ID").val();
+            var amount = parseInt($("#Amount").val());
+            var mealPriceText = $("#Meal_ID option:selected").text().parseFloat();
+            var mealPrice = parseFloat(mealPriceText.match(/Price: (\d+(\.\d+)?)/)[1]); 
+
+            if (!isNaN(amount) && !isNaN(mealPrice)) {
+                var totalCost = mealPrice * amount;
+                $("#TotalCost").val(totalCost.toFixed(2));
+            }
+        }
+
+        function updateDeliveryTime() {
+            var orderTime = new Date($("#OrderTime").val());
+            var mealId = $("#Meal_ID").val();
+            var timeToPrepare = parseInt($("#MealOptions").find("option:selected").data("TimeToPrepare"));
+
+            if (!isNaN(timeToPrepare)) {
+                var deliveryTime = new Date(orderTime.getTime() + timeToPrepare * 60000); 
+                $("#DeliveryTime").val(deliveryTime.toISOString().slice(0, 16));
+            }
+        }
+
+        $(document).ready(function () {
+            updateTotalCost(); 
+            updateDeliveryTime(); 
+
+            $("#Meal_ID, #Amount").change(function () {
+                updateTotalCost();
+                updateDeliveryTime();
+            });
+        });
+    </script>
+}

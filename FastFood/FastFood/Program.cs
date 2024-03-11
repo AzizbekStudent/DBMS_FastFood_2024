@@ -28,6 +28,13 @@ builder.Services.AddScoped<IRepository<Menu>>(
        return new MenuDapperRepository(_connStr);
    });
 
+builder.Services.AddScoped<IRepository<Order>>(
+   p =>
+   {
+       return new OrderDapperRepository(_connStr);
+   });
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

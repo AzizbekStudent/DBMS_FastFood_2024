@@ -1,0 +1,61 @@
+﻿@model IEnumerable<FastFood.DAL.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.order_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderTime)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentStatus)
+            </th>
+
+
+            <th>
+                @Html.DisplayNameFor(model => model.TotalCost)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.order_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderTime)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentStatus)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalCost)
+            </td>
+
+            <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.order_ID }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.order_ID  }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.order_ID, viewName = "DeleteConfirmed" }, new { @class = "btn btn-danger" })
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
