@@ -53,9 +53,19 @@ namespace FastFood.DAL.Repositories
         }
 
         // Delete
-        public Task<int> DeleteAsync(Order entity)
+        public async Task<int> DeleteAsync(Order entity)
         {
-            throw new NotImplementedException();
+            using var conn = new SqlConnection(_connStr);
+            var parameters = new
+            {
+                OrderID = entity.order_ID
+            };
+
+            return await conn.ExecuteAsync(
+                "udp_Order_Delete",
+                parameters,
+                commandType: CommandType.StoredProcedure
+            );
         }
 
         // Get All
@@ -122,32 +132,41 @@ namespace FastFood.DAL.Repositories
         }
 
         // Update
-        public Task<int> UpdateAsync(Order entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Employee>> GetListOfEmployee()
+        public async Task<int> UpdateAsync(Order entity)
         {
             using var conn = new SqlConnection(_connStr);
 
-            var EmpList = await conn.QueryAsync<Employee>(
-                "udp_GetAllEmployee",
-                commandType: CommandType.StoredProcedure);
+            entity.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
+                "udp_Menu_Get_By_Id",
+                new { meal_ID = entity.Meal_ID },
+                commandType: CommandType.StoredProcedure
+                );
 
-            return EmpList;
+            entity.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
+            "udp_Employee_Get_ByID",
+            new { employeeID = entity.Prepared_By },
+            commandType: CommandType.StoredProcedure
+            );
+
+            var parameters = new DynamicParameters();
+
+            parameters.Add("@OrderID", entity.order_ID);
+            parameters.Add("@OrderTime", entity.OrderTime);
+            parameters.Add("@DeliveryTime", entity.DeliveryTime);
+            parameters.Add("@PaymentStatus", entity.PaymentStatus);
+            parameters.Add("@MealID", entity.Meal.Meal_ID);
+            parameters.Add("@Amount", entity.Amount);
+            parameters.Add("@TotalCost", entity.TotalCost);
+            parameters.Add("@PreparedBy", entity.Staff.Employee_ID);
+
+            return await conn.ExecuteAsync(
+                "udp_Order_Update",
+                parameters,
+                commandType: CommandType.StoredProcedure
+                );
         }
 
-        public async Task<IEnumerable<Menu>> GetListOfMeal()
-        {
-            using var conn = new SqlConnection(_connStr);
-
-            var MenuList = await conn.QueryAsync<Menu>(
-                "udp_Menu_Get_All",
-                commandType: CommandType.StoredProcedure);
-
-            return MenuList;
-        }
+       
 
     }
 }

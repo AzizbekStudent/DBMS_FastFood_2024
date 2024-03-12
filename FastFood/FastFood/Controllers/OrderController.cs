@@ -70,18 +70,18 @@ namespace FastFood.Controllers
 
 
                 var employeeOptions = await _EmpRepository.GetAllAsync();
-
                 if (employeeOptions == null)
                 {
                     employeeOptions = new List<Employee>();
                 }
-                ViewBag.EmployeeOptions = employeeOptions.Select(e => new SelectListItem { Value = e.Employee_ID.ToString(), Text = e.FName }).ToList();
+
+                var cookEmployees = employeeOptions.Where(e => e.Job == "cook").ToList();
+                ViewBag.EmployeeOptions = cookEmployees.Select(e => new SelectListItem { Value = e.Employee_ID.ToString(), Text = e.FName }).ToList();
 
                 var order = new Order
                 {
                     OrderTime = DateTime.Now,
                     DeliveryTime = DateTime.Now,
-                    Amount = 1 
                 };
 
                 return View(order);
@@ -104,11 +104,11 @@ namespace FastFood.Controllers
                 order.Meal = await _MenuRepository.GetByIdAsync((int)order.Meal_ID);
                 order.Staff = await _EmpRepository.GetByIdAsync((int)order.Prepared_By);
 
-                order.DeliveryTime = order.OrderTime.Add((TimeSpan)order.Meal.TimeToPrepare);
 
                 order.PaymentStatus = order.PaymentStatus;
                 order.Meal_ID = order.Meal.Meal_ID;
                 order.Amount = order.Amount;
+                order.DeliveryTime = order.OrderTime.Add((TimeSpan)(order.Meal.TimeToPrepare * order.Amount));
 
                 decimal totalPrice = order.Meal.Price * (decimal)order.Amount;
 
@@ -116,9 +116,10 @@ namespace FastFood.Controllers
 
                 order.Prepared_By = order.Staff.Employee_ID;
 
-                int id = await _OrderRepository.CreateAsync(order);
+                int success = await _OrderRepository.CreateAsync(order);
 
-                return RedirectToAction("Index");
+
+                if(success > 0)    return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -126,6 +127,123 @@ namespace FastFood.Controllers
             }
 
             return View(order);
+        }
+
+        // Update 
+        public async Task<IActionResult> Edit(int id)
+        {
+
+            var mealOptions = await _MenuRepository.GetAllAsync();
+
+            if (mealOptions == null)
+            {
+                mealOptions = new List<Menu>();
+            }
+
+            ViewBag.MealOptions = mealOptions.Select(m => new SelectListItem
+            {
+                Value = m.Meal_ID.ToString(),
+                Text = $"{m.Meal_title} - Price: {m.Price}, Time to Prepare: {m.TimeToPrepare} minutes"
+            }).ToList();
+
+
+            var employeeOptions = await _EmpRepository.GetAllAsync();
+            if (employeeOptions == null)
+            {
+                employeeOptions = new List<Employee>();
+            }
+
+            var cookEmployees = employeeOptions.Where(e => e.Job == "cook").ToList();
+            ViewBag.EmployeeOptions = cookEmployees.Select(e => new SelectListItem { Value = e.Employee_ID.ToString(), Text = e.FName }).ToList();
+
+
+            var order = await _OrderRepository.GetByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return View(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, Order order)
+        {
+            if (id != order.order_ID)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                order.order_ID = order.order_ID;
+                order.OrderTime = DateTime.Now;
+
+                order.Meal = await _MenuRepository.GetByIdAsync((int)order.Meal_ID);
+                order.Staff = await _EmpRepository.GetByIdAsync((int)order.Prepared_By);
+
+
+                order.PaymentStatus = order.PaymentStatus;
+                order.Meal_ID = order.Meal.Meal_ID;
+                order.Amount = order.Amount;
+                order.DeliveryTime = order.OrderTime.Add((TimeSpan)(order.Meal.TimeToPrepare * order.Amount));
+
+                decimal totalPrice = order.Meal.Price * (decimal)order.Amount;
+                order.TotalCost = totalPrice;
+                order.Prepared_By = order.Staff.Employee_ID;
+
+
+
+                var success = await _OrderRepository.UpdateAsync(order);
+
+                if (success > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return BadRequest("Order update failed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(order);
+            }
+
+            return View(order);
+        }
+
+
+        // Delete
+        public async Task<IActionResult> Delete(int id)
+        {
+            var ingredient = await _OrderRepository.GetByIdAsync(id);
+            if (ingredient == null)
+            {
+                return NotFound();
+            }
+            return View(ingredient);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmation(int id)
+        {
+            var ingredient = await _OrderRepository.GetByIdAsync(id);
+            if (ingredient == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _OrderRepository.DeleteAsync(ingredient);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error {ex.Message}");
+            }
         }
     }
 }

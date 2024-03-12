@@ -22,7 +22,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" novalidate>
+        <form asp-action="Create" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="order_ID" class="control-label"></label>
@@ -33,11 +33,6 @@
                 <label asp-for="OrderTime" class="control-label"></label>
                 <input asp-for="OrderTime" id="OrderTime" class="form-control" readonly />
                 <span asp-validation-for="OrderTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeliveryTime" class="control-label"></label>
-                <input asp-for="DeliveryTime" id="DeliveryTime" class="form-control" readonly />
-                <span asp-validation-for="DeliveryTime" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -60,11 +55,7 @@
                 <input asp-for="Amount" id="Amount" class="form-control" type="number" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TotalCost" class="control-label"></label>
-                <input asp-for="TotalCost" id="TotalCost" class="form-control" readonly />
-                <span asp-validation-for="TotalCost" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="Prepared_By" class="control-label">Prepared By</label>
                 <select asp-for="Prepared_By" class="form-control">
