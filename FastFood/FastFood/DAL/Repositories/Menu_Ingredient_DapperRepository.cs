@@ -37,9 +37,20 @@ namespace FastFood.DAL.Repositories
         }
 
         // Delete
-        public Task<int> DeleteAsync(Menu_Ingredients entity)
+        public async Task<int> DeleteAsync(Menu_Ingredients entity)
         {
-            throw new NotImplementedException();
+            using var conn = new SqlConnection(_connStr);
+            var parameters = new
+            {
+                mealID = entity.meal_ID,
+                ingredientID = entity.ingredient_ID
+            };
+
+            return await conn.ExecuteAsync(
+                "udp_Menu_Ingredients_Delete",
+                parameters,
+                commandType: CommandType.StoredProcedure
+            );
         }
 
         // Get All
@@ -126,9 +137,24 @@ namespace FastFood.DAL.Repositories
         }
 
         // Update
-        public Task<int> UpdateAsync(Menu_Ingredients entity)
+        public async Task<int> UpdateAsync(Menu_Ingredients entity)
         {
-            throw new NotImplementedException();
+
+
+            using var conn = new SqlConnection(_connStr);
+
+
+            var parameters = new DynamicParameters();
+
+            parameters.Add("@@mealID", entity.meal_ID);
+            parameters.Add("@@oldIngredientID", entity.oldingredient_ID);
+            parameters.Add("@@newIngredientID", entity.ingredient_ID);
+
+            return await conn.ExecuteAsync(
+                "udp_Menu_Ingredients_Update",
+                parameters,
+                commandType: CommandType.StoredProcedure
+                );
         }
     }
 }

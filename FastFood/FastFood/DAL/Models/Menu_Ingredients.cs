@@ -13,5 +13,7 @@
         public Ingredients? Ingredient { get; set; }
 
         public List<Ingredients> IngredinetList { get; set; } = new List<Ingredients>();
+
+        public int? oldingredient_ID { get; set; }
     }
 }

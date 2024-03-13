@@ -39,9 +39,9 @@
                     }
             </td>
             <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.meal_ID }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.meal_ID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.meal_ID })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.meal_ID })    |   
+                    @Html.ActionLink("Details", "Details", new { id = item.meal_ID })    |   
+                    @Html.ActionLink("Delete", "Delete", new { id = item.meal_ID, viewName = "DeleteConfirmed" }, new { @class = "btn btn-danger" })
             </td>
         </tr>
 }
