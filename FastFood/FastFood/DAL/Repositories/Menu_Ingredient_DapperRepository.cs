@@ -18,9 +18,22 @@ namespace FastFood.DAL.Repositories
 
         // Main Functions
         // Create
-        public Task<int> CreateAsync(Menu_Ingredients entity)
+        public async Task<int> CreateAsync(Menu_Ingredients entity)
         {
-            throw new NotImplementedException();
+            using var conn = new SqlConnection(_connStr);
+
+            var parameters = new
+            {
+                mealID = entity.meal_ID,
+                ingredientID = entity.ingredient_ID
+            };
+
+            return await conn.ExecuteAsync(
+                "udp_Menu_Ingredients_Insert",
+                parameters,
+                commandType: CommandType.StoredProcedure
+            );
+
         }
 
         // Delete
