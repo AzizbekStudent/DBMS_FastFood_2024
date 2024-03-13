@@ -49,7 +49,7 @@
                 {
                     string imageBase64 = Convert.ToBase64String(Model.Image);
                     string imageUrl = $"data:image;base64,{imageBase64}";
-                    <img src="@imageUrl" alt="Ingredient Image" />
+                    <img src="@imageUrl" alt="Ingredient Image" style="width: 400px; height : 400px ; margin-bottom : 20px" />
                 }
                 else
                 {

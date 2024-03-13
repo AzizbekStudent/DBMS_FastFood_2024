@@ -82,34 +82,34 @@ namespace FastFood.DAL.Repositories
                 "udp_Menu_Ingredients_Get_By_Id",
                 new { mealID = id },
                 commandType: CommandType.StoredProcedure
-                );
+            );
 
-            var meal = new Menu_Ingredients();
+            if (!meals.Any())
+                return null;
 
-            if (meals != null)
+            var Newmeal = new Menu_Ingredients();
+
+            var mealInfo = await conn.QueryFirstOrDefaultAsync<Menu>(
+                "udp_Menu_Get_By_Id",
+                new { meal_ID = id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            Newmeal.Meal = mealInfo;
+            Newmeal.meal_ID = mealInfo.Meal_ID;
+
+            foreach (var m in meals)
             {
-                foreach (var m in meals)
-                {
-                    meal.Ingredient = await conn.QueryFirstOrDefaultAsync<Ingredients>(
+                var ingredient = await conn.QueryFirstOrDefaultAsync<Ingredients>(
                     "udp_Ingredients_Get_By_Id",
                     new { ingredientID = m.ingredient_ID },
                     commandType: CommandType.StoredProcedure
-                    );
+                );
 
-                    meal.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
-                    "udp_Menu_Get_By_Id",
-                    new { meal_ID = m.meal_ID },
-                    commandType: CommandType.StoredProcedure
-                    );
-
-                    meal.IngredinetList.Add(meal.Ingredient);
-                }
-
-                return meal; 
+                Newmeal.IngredinetList.Add(ingredient);
             }
 
-
-            return null;
+            return Newmeal;
         }
 
         // Update
