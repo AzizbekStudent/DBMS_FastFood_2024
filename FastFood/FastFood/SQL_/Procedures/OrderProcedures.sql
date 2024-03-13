@@ -8,6 +8,7 @@ AS
 Begin
 	Select order_ID, OrderTime, DeliveryTime, PaymentStatus, Meal_ID, Amount, Total_Cost, Prepared_by 
 	From Orders
+    order by order_ID desc
 End
 
 

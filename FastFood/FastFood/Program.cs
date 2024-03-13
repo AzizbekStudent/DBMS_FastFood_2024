@@ -33,6 +33,11 @@ builder.Services.AddScoped<IRepository<Order>>(
    {
        return new OrderDapperRepository(_connStr);
    });
+builder.Services.AddScoped<IRepository<Menu_Ingredients>>(
+   p =>
+   {
+       return new Menu_Ingredient_DapperRepository(_connStr);
+   });
 
 
 
@@ -65,8 +70,15 @@ app.MapControllerRoute(
     pattern: "{controller=Ingredient}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
-    name: "ingredient",
+    name: "Menu",
     pattern: "{controller=Menu}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "Order",
+    pattern: "{controller=Order}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "Menu_Ingredient",
+    pattern: "{controller=Menu_Ingredient}/{action=Index}/{id?}");
 
 app.Run();
