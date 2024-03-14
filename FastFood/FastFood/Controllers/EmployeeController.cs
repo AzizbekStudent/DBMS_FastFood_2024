@@ -1,7 +1,8 @@
-﻿using FastFood.DAL.Interface;
+﻿using FastFood.DAL.FilterResult;
+using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Core.Types;
+
 
 namespace FastFood.Controllers
 {
@@ -9,11 +10,53 @@ namespace FastFood.Controllers
     {
         private readonly IRepository<Employee> _EmpRepository;
 
+        private readonly IFilter_Employee _EmpFilter;
 
-        public EmployeeController(IRepository<Employee> repository)
+
+        public EmployeeController(IRepository<Employee> repository, IFilter_Employee empFilter)
         {
             _EmpRepository = repository;
+            _EmpFilter = empFilter;
         }
+
+
+        // Filtration
+        // Filtration
+        public async Task<IActionResult> Filter(EmployeeFilterViewModel filter)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(filter.FName) || !string.IsNullOrEmpty(filter.LName) || filter.HireDate.HasValue || filter.PageSize > 0 || filter.PageNumber > 0)
+                {
+
+                    var employees = await _EmpFilter.FilterEmployeesAsync(
+                        filter.FName,
+                        filter.LName,
+                        filter.HireDate,
+                        filter.SortField,
+                        filter.SortAsc,
+                        filter.PageNumber,
+                        filter.PageSize
+                                         
+                        );
+
+                    filter.Employees = employees;
+
+                    return View(filter);
+                }
+                else
+                {
+                    filter.Employees = await _EmpRepository.GetAllAsync();
+                }
+
+                return View(filter);
+            }
+            catch (Exception err)
+            {
+                return StatusCode(500, $"Server error {err.Message}");
+            }
+        }
+
 
 
         // Get all implemented

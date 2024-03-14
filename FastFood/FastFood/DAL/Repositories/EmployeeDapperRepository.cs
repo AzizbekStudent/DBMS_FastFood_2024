@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace FastFood.DAL.Repositories
 {
-    public class EmployeeDapperRepository : IRepository<Employee>
+    public class EmployeeDapperRepository : IRepository<Employee>, IFilter_Employee
     {
         private readonly string _connStr;
 
@@ -55,6 +55,7 @@ namespace FastFood.DAL.Repositories
                 commandType: CommandType.StoredProcedure
             );
         }
+
 
         // Get All
         public async Task<IEnumerable<Employee>> GetAllAsync()
@@ -108,5 +109,39 @@ namespace FastFood.DAL.Repositories
                 commandType: CommandType.StoredProcedure
                 );
         }
+
+        // Filter
+        public async Task<IEnumerable<Employee>> FilterEmployeesAsync(
+            string fName, 
+            string lName, 
+            DateTime? hireDate, 
+            string sortField, 
+            bool sortAsc, 
+            int pageNumber,
+            int pageSize)
+        {
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 3;
+
+            using var conn = new SqlConnection(_connStr);
+
+            var parameters = new DynamicParameters();
+            parameters.Add("FName", fName);
+            parameters.Add("LName", lName);
+            parameters.Add("HireDate", hireDate);
+            parameters.Add("SortField", sortField ?? "employee_ID");
+            parameters.Add("SortAsc", sortAsc);
+            parameters.Add("PageNumber", pageNumber);
+            parameters.Add("PageSize", pageSize);
+
+            var employees =  await conn.QueryAsync<Employee>(
+                "udp_Filter_Employee",
+                parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return employees;
+        }
+
+
     }
 }

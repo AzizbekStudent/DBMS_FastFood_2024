@@ -1,6 +1,7 @@
 using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using FastFood.DAL.Repositories;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration config = builder.Configuration;
@@ -39,6 +40,11 @@ builder.Services.AddScoped<IRepository<Menu_Ingredients>>(
        return new Menu_Ingredient_DapperRepository(_connStr);
    });
 
+
+
+// Filter injection of interface
+builder.Services.AddScoped<IFilter_Employee>(provider =>
+    new EmployeeDapperRepository(_connStr));
 
 
 // Add services to the container.

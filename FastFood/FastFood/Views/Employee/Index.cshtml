@@ -6,9 +6,16 @@
 
 <h1>Index</h1>
 
+<div>
+    @Html.ActionLink("Filter Employees", "Filter", "Employee", null, new { @class = "btn btn-primary" })
+</div>
+<br />
+<hr />
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
