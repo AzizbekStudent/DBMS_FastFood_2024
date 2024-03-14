@@ -111,7 +111,7 @@ namespace FastFood.DAL.Repositories
         }
 
         // Filter
-        public async Task<IEnumerable<Employee>> FilterEmployeesAsync(
+        public async Task<(IEnumerable<Employee>, int)> FilterEmployeesAsync(
             string fName, 
             string lName, 
             DateTime? hireDate, 
@@ -133,13 +133,17 @@ namespace FastFood.DAL.Repositories
             parameters.Add("SortAsc", sortAsc);
             parameters.Add("PageNumber", pageNumber);
             parameters.Add("PageSize", pageSize);
+            parameters.Add("@TotalCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
 
             var employees =  await conn.QueryAsync<Employee>(
                 "udp_Filter_Employee",
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-            return employees;
+            var totalCount = parameters.Get<int>("@TotalCount");
+
+            return (employees, totalCount);
         }
 
 

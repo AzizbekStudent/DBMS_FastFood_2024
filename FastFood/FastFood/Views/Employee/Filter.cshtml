@@ -29,11 +29,27 @@
                 <input asp-for="PageSize" class="form-control" type="number" />
                 <span asp-validation-for="PageSize" class="text-danger"></span>
 
+                <br />
                 <label asp-for="PageNumber" class="control-label"></label>
                 <input asp-for="PageNumber" class="form-control" type="number" />
                 <span asp-validation-for="PageNumber" class="text-danger"></span>
+                
+                <br />
+                <label asp-for="SortField" class="control-label">Sort By</label>
+                <select asp-for="SortField" class="form-control">
+                    <option value="employee_ID">Default</option>
+                    <option value="FName">First Name</option>
+                    <option value="LName">Last Name</option>
+                    <option value="Telephone">Telephone Number</option>
+                    <option value="Job">Job</option>
+                    <option value="Age">Age</option>
+                    <option value="Salary">Salary</option>
+                    <option value="HireDate">Hire Date</option>
+                    <option value="FullTime">Full time worker</option>
+                </select>
 
-                <label asp-for="SortAsc" class="control-label"></label>
+                <br />
+                <label asp-for="SortAsc" class="control-label"> Sort type</label>
                 <select asp-for="SortAsc" class="form-control">
                     <option value="true">Ascending</option>
                     <option value="false">Descending</option>
@@ -56,7 +72,13 @@
             <th>Emp ID</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Telephone </th>
+            <th>Job</th>
+            <th>Age </th>
+            <th>Salary</th>
             <th>Hired Date</th>
+            <th>Full Time</th>
+
             <th></th>
         </tr>
     </thead>
@@ -67,7 +89,12 @@
                 <td>@item.Employee_ID</td>
                 <td>@item.FName</td>
                 <td>@item.LName</td>
+                <td>@item.Telephone</td>
+                <td>@item.Job</td>
+                <td>@item.Age</td>
+                <td>@item.Salary</td>
                 <td>@item.HireDate</td>
+                <td>@item.FullTime</td>
                 <td>
                     <a href="@Url.Action("Details", "Employee", new { id = item.Employee_ID })">Details</a>
                 </td>
@@ -77,12 +104,33 @@
 </table>
 
 <div>
-    @Html.ActionLink("Prev", "Filter", new { Page = Model.PageNumber - 1 })
-
-    @for (int p = 1; p <= Model.PageSize; p++)
+    @if (Model.TotalCount > 1)
     {
-        @Html.ActionLink($"{p}", "Filter", new { Page = p })
-    }
+        @if (Model.PageNumber > 1)
+        {
+            <a href="@Url.Action("Filter", new { PageNumber = 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">First</a>
+            <a href="@Url.Action("Filter", new { PageNumber = Model.PageNumber - 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Previous</a>
+        }
 
-    @Html.ActionLink("Next", "Filter", new { Page = Model.PageNumber + 1 })
+        @for (int i = 1; i <= Model.TotalCount; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                <span>@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action("Filter", new { PageNumber = i, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">@i</a>
+            }
+        }
+
+        @if (Model.PageNumber < Model.TotalCount)
+        {
+            <a href="@Url.Action("Filter", new { PageNumber = Model.PageNumber + 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Next</a>
+            <a href="@Url.Action("Filter", new { PageNumber = Model.TotalCount, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Last</a>
+        }
+    }
 </div>
+
+
+

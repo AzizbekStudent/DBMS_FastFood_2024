@@ -4,7 +4,7 @@ namespace FastFood.DAL.Interface
 {
     public interface IFilter_Employee
     {
-        Task<IEnumerable<Employee>> FilterEmployeesAsync(
+        Task<(IEnumerable<Employee>, int)> FilterEmployeesAsync(
             string fName, 
             string lName, 
             DateTime? hireDate, 

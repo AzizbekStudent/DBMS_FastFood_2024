@@ -29,7 +29,7 @@ namespace FastFood.Controllers
                 if (!string.IsNullOrEmpty(filter.FName) || !string.IsNullOrEmpty(filter.LName) || filter.HireDate.HasValue || filter.PageSize > 0 || filter.PageNumber > 0)
                 {
 
-                    var employees = await _EmpFilter.FilterEmployeesAsync(
+                    var (employees, totalCount) = await _EmpFilter.FilterEmployeesAsync(
                         filter.FName,
                         filter.LName,
                         filter.HireDate,
@@ -42,11 +42,28 @@ namespace FastFood.Controllers
 
                     filter.Employees = employees;
 
+                    int totalPages = (int)Math.Ceiling((double)totalCount / filter.PageSize);
+                    filter.TotalCount = totalPages;
+
                     return View(filter);
                 }
                 else
                 {
-                    filter.Employees = await _EmpRepository.GetAllAsync();
+                   var (emp, totalCount)  =  await _EmpFilter.FilterEmployeesAsync(
+                        filter.FName,
+                        filter.LName,
+                        filter.HireDate,
+                        filter.SortField,
+                        filter.SortAsc,
+                        filter.PageNumber,
+                        filter.PageSize
+
+                        );
+                    filter.Employees = emp;
+
+                    int totalPages = (int)Math.Ceiling((double)totalCount / filter.PageSize);
+                    filter.TotalCount = totalPages;
+
                 }
 
                 return View(filter);
