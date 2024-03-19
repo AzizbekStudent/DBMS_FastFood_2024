@@ -7,62 +7,72 @@
 <h1>Filter</h1>
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Filter">
+    <div class="col-md-4 w-100">
+        <form id="filterForm" asp-action="Filter">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FName" class="control-label"></label>
-                <input asp-for="FName" class="form-control" />
-                <span asp-validation-for="FName" class="text-danger"></span>
-
-                <label asp-for="LName" class="control-label"></label>
-                <input asp-for="LName" class="form-control" />
-                <span asp-validation-for="LName" class="text-danger"></span>
-
-                <label asp-for="HireDate" class="control-label"></label>
-                <input asp-for="HireDate" class="form-control" type="date" />
-                <span asp-validation-for="HireDate" class="text-danger"></span>
+            <div class="form-group d-flex justify-content-between" >
+                <div>
+                    <label asp-for="FName" class="control-label"></label>
+                    <input asp-for="FName" id="FName" class="form-control" />
+                    <span asp-validation-for="FName" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="LName" class="control-label"></label>
+                    <input asp-for="LName" id="LName" class="form-control" />
+                    <span asp-validation-for="LName" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="HireDate" class="control-label"></label>
+                    <input asp-for="HireDate" id="HireDate" class="form-control" type="date" />
+                    <span asp-validation-for="HireDate" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="PageSize" class="control-label"></label>
-                <input asp-for="PageSize" class="form-control" type="number" />
-                <span asp-validation-for="PageSize" class="text-danger"></span>
-
-                <br />
-                <label asp-for="PageNumber" class="control-label"></label>
-                <input asp-for="PageNumber" class="form-control" type="number" />
-                <span asp-validation-for="PageNumber" class="text-danger"></span>
-                
-                <br />
-                <label asp-for="SortField" class="control-label">Sort By</label>
-                <select asp-for="SortField" class="form-control">
-                    <option value="employee_ID">Default</option>
-                    <option value="FName">First Name</option>
-                    <option value="LName">Last Name</option>
-                    <option value="Telephone">Telephone Number</option>
-                    <option value="Job">Job</option>
-                    <option value="Age">Age</option>
-                    <option value="Salary">Salary</option>
-                    <option value="HireDate">Hire Date</option>
-                    <option value="FullTime">Full time worker</option>
-                </select>
-
-                <br />
-                <label asp-for="SortAsc" class="control-label"> Sort type</label>
-                <select asp-for="SortAsc" class="form-control">
-                    <option value="true">Ascending</option>
-                    <option value="false">Descending</option>
-                </select>
-                <span asp-validation-for="SortAsc" class="text-danger"></span>
+            <div class="form-group d-flex justify-content-between">
+                <div>
+                    <label asp-for="PageSize" class="control-label"></label>
+                    <input asp-for="PageSize" class="form-control" type="number" />
+                    <span asp-validation-for="PageSize" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="PageNumber" class="control-label"></label>
+                    <input asp-for="PageNumber" class="form-control" type="number" />
+                    <span asp-validation-for="PageNumber" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="SortField" class="control-label">Sort By</label>
+                    <select asp-for="SortField" class="form-control">
+                        <option value="employee_ID">Default</option>
+                        <option value="FName">First Name</option>
+                        <option value="LName">Last Name</option>
+                        <option value="Telephone">Telephone Number</option>
+                        <option value="Job">Job</option>
+                        <option value="Age">Age</option>
+                        <option value="Salary">Salary</option>
+                        <option value="HireDate">Hire Date</option>
+                        <option value="FullTime">Full time worker</option>
+                    </select>
+                </div>
+               
+            </div>
+            <div class="form-group d-flex justify-content-between">
+                <div>
+                    <label asp-for="SortAsc" class="control-label"> Sort type</label>
+                    <select asp-for="SortAsc" class="form-control">
+                        <option value="true">Ascending</option>
+                        <option value="false">Descending</option>
+                    </select>
+                    <span asp-validation-for="SortAsc" class="text-danger"></span>
+                </div>
             </div>
 
-
-            <div class="form-group">
-                <input type="submit" value="Filter" class="btn btn-primary" />
+            <div class="d-flex justify-content-between mt-4 ">
+                <input type="submit" id="Filter" value="Filter" class="btn btn-primary" />
+                <button type="button" id="exportButtonJson" class="btn btn-success ml-2 ">Export to Json</button>
+                <button type="button" id="exportButtonXML" class="btn btn-success ml-2 ">Export to XML</button>
             </div>
+
         </form>
-
     </div>
 </div>
 
@@ -132,5 +142,23 @@
     }
 </div>
 
+ @section Scripts 
+ {
+    <script>
+        document.getElementById("exportButtonJson").addEventListener("click", function () {
+            document.getElementById("filterForm").action = '@Url.Action("Export_To_Json", "Employee")';
+            document.getElementById("filterForm").submit();
+            resetFormAction();
+        });
 
+        document.getElementById("exportButtonXML").addEventListener("click", function () {
+            document.getElementById("filterForm").action = '@Url.Action("Export_To_XML", "Employee")';
+            document.getElementById("filterForm").submit();
+            resetFormAction();
+        });
 
+        function resetFormAction() {
+            document.getElementById("filterForm").action = '@Url.Action("Filter", "Employee")';
+        }
+    </script>
+ }

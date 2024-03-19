@@ -2,6 +2,7 @@
 using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 
 namespace FastFood.Controllers
@@ -12,15 +13,40 @@ namespace FastFood.Controllers
 
         private readonly IFilter_Employee _EmpFilter;
 
+        private readonly I_Export_Employee _ExportEmployee;
 
-        public EmployeeController(IRepository<Employee> repository, IFilter_Employee empFilter)
+
+        public EmployeeController(IRepository<Employee> repository, IFilter_Employee empFilter, I_Export_Employee exportEmployee)
         {
             _EmpRepository = repository;
             _EmpFilter = empFilter;
+            _ExportEmployee = exportEmployee;
         }
 
+        // Export To Json
+        public IActionResult Export_To_Json(EmployeeFilterViewModel filter)
+        {
+            string json = _ExportEmployee.ExportTO_Json(filter.FName, filter.LName, filter.HireDate);
+            return File(
+                Encoding.UTF8.GetBytes(json),
+                "application/json",
+                $"Employees_{DateTime.Now}.json"
+                );
+        }
 
-        // Filtration
+        
+        // Export to XML
+        public IActionResult Export_To_XML(EmployeeFilterViewModel filter)
+        {
+            string xml = _ExportEmployee.ExportTO_XML(filter.FName, filter.LName, filter.HireDate);
+
+            return File(
+                Encoding.UTF8.GetBytes(xml),
+                "text/xml",
+                $"Employees_{DateTime.Now}.xml"
+                );
+        }
+
         // Filtration
         public async Task<IActionResult> Filter(EmployeeFilterViewModel filter)
         {

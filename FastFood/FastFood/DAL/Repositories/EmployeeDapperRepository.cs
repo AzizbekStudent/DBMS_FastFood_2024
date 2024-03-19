@@ -3,10 +3,12 @@ using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Xml.Linq;
 
 namespace FastFood.DAL.Repositories
 {
-    public class EmployeeDapperRepository : IRepository<Employee>, IFilter_Employee
+    // Students ID: 00013836 00014725 00014896
+    public class EmployeeDapperRepository : IRepository<Employee>, IFilter_Employee, I_Export_Employee
     {
         private readonly string _connStr;
 
@@ -144,6 +146,45 @@ namespace FastFood.DAL.Repositories
             var totalCount = parameters.Get<int>("@TotalCount");
 
             return (employees, totalCount);
+        }
+
+        // Exporting XML Filter
+        public string ExportTO_XML( string? fName,  string? lName, DateTime? hireDate )
+        {
+            using var conn = new SqlConnection(_connStr);
+            var parameters = new DynamicParameters();
+            parameters.Add("FName", fName);
+            parameters.Add("LName", lName);
+            parameters.Add("HireDate", hireDate);
+
+            parameters.Add(
+                "Results",
+                direction: ParameterDirection.Output,
+                dbType: DbType.String,
+                size: 2000
+                );
+
+            conn.Execute(
+                "udp_Employee_Filter_ToXML",
+                commandType: CommandType.StoredProcedure,
+                param: parameters
+                );
+
+            return parameters.Get<string>("Results");
+        }
+
+        // Exporting JSON Filter
+        public string ExportTO_Json( string? fName, string? lName,  DateTime? hireDate )
+        {
+            using var conn = new SqlConnection(_connStr);
+            return conn.ExecuteScalar<string>(
+                "udp_Employee_Filter_ToJSON",
+                new
+                {
+                    FName = fName,
+                    LName = lName,
+                    HireDate = hireDate
+                }, commandType: CommandType.StoredProcedure) ?? "";
         }
 
 

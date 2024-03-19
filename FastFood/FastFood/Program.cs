@@ -46,6 +46,9 @@ builder.Services.AddScoped<IRepository<Menu_Ingredients>>(
 builder.Services.AddScoped<IFilter_Employee>(provider =>
     new EmployeeDapperRepository(_connStr));
 
+builder.Services.AddScoped<I_Export_Employee>(provider =>
+    new EmployeeDapperRepository(_connStr));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
