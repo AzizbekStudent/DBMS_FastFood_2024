@@ -61,16 +61,16 @@ Create Table Employee (
 -- Inserting records 
 Insert Into Employee (FName, LName, Telephone, Job, Age, Salary, HireDate, Image, FullTime)
 Values
-    ('John', 'Doe', '123-456-7890', 'admin', 35, 50000.00, '2023-01-01 08:00:00', NULL, 1),
-    ('Jane', 'Smith', '987-654-3210', 'cook', 28, 40000.00, '2023-01-02 09:00:00', NULL, 1),
-    ('Alice', 'Johnson', '555-123-4567', 'cashier', 22, 30000.00, '2023-01-03 10:00:00', NULL, 1),
-    ('Bob', 'Williams', '777-888-9999', 'cook', 30, 45000.00, '2023-01-04 11:00:00', NULL, 1),
-    ('Emily', 'Brown', '111-222-3333', 'cashier', 25, 32000.00, '2023-01-05 12:00:00', NULL, 1),
-    ('David', 'Jones', '444-555-6666', 'cook', 40, 48000.00, '2023-01-06 13:00:00', NULL, 1),
-    ('Sarah', 'Taylor', '999-888-7777', 'cashier', 29, 31000.00, '2023-01-07 14:00:00', NULL, 1),
-    ('Michael', 'Clark', '666-555-4444', 'admin', 45, 55000.00, '2023-01-08 15:00:00', NULL, 1),
-    ('Rachel', 'White', '333-222-1111', 'cashier', 27, 33000.00, '2023-01-09 16:00:00', NULL, 1),
-    ('Kevin', 'Lee', '777-999-1111', 'cook', 32, 47000.00, '2023-01-10 17:00:00', NULL, 1);
+    ('Ali', 'Sobirov', '998-90-852-87-74', 'admin', 35, 50000.00, '2023-01-01 08:00:00', NULL, 1),
+    ('Vali', 'Utkirov', '998-90-872-86-72', 'cook', 28, 40000.00, '2023-01-02 09:00:00', NULL, 1),
+    ('Bobur', 'Uzoqov', '998-90-882-45-14', 'cashier', 22, 30000.00, '2023-01-03 10:00:00', NULL, 1),
+    ('Vlad', 'Volkov', '998-90-892-98-29', 'cook', 30, 45000.00, '2023-01-04 11:00:00', NULL, 1),
+    ('Vadim', 'Sergeyev', '998-90-952-32-26', 'cashier', 25, 32000.00, '2023-01-05 12:00:00', NULL, 1),
+    ('David', 'Jones', '998-90-842-22-11', 'cook', 40, 48000.00, '2023-01-06 13:00:00', NULL, 1),
+    ('Mirsayid', 'Holiqov', '998-90-452-94-19', 'cashier', 29, 31000.00, '2023-01-07 14:00:00', NULL, 1),
+    ('Akmal', 'Vohidov', '998-90-822-15-24', 'admin', 45, 55000.00, '2023-01-08 15:00:00', NULL, 1),
+    ('Sardor', 'Rashidov', '998-90-962-35-34', 'cashier', 27, 33000.00, '2023-01-09 16:00:00', NULL, 1),
+    ('Rustam', 'Akromov', '998-90-351-55-49', 'cook', 32, 47000.00, '2023-01-10 17:00:00', NULL, 1);
 
 
 ----------------------------------------------------------------
@@ -106,11 +106,14 @@ Values
 ----------------------------------------------------------------------
 
 Create Table Menu_Ingredients (
-    meal_ID Int,
-    ingredient_ID Int,
+    meal_ID Int ,
+    ingredient_ID Int ,
+
     Primary Key (meal_ID, ingredient_ID),
     Foreign Key (meal_ID) References Menu(meal_ID),
     Foreign Key (ingredient_ID) References Ingredients(ingredient_ID)
+    --Constraint FK_Delete_Menu_Ingredients_Meal Foreign Key (meal_ID) References Menu(meal_ID) On Delete set null,
+    --Constraint FK_Delete_Menu_Ingredients_Product Foreign Key (ingredient_ID) References Ingredients(ingredient_ID) On Delete set null
 )
 
 -- Inserting records into the MenuIngredients table
@@ -127,14 +130,16 @@ Create Table Orders (
     OrderTime DateTime,
     DeliveryTime DateTime,
     PaymentStatus BIT,
-    Meal_ID Int,
+    Meal_ID Int null,
     Amount Int,
     Total_Cost Decimal(10, 2),
-    Prepared_by Int,
+    Prepared_by Int null,
 
 	Constraint pk_order_id Primary key (order_ID),
     Foreign Key (Meal_ID) References Menu(meal_ID),
-    Foreign Key (Prepared_by) References Employee(employee_ID)
+    Foreign Key (Prepared_by) References Employee(employee_ID),
+    Constraint FK_Delete_Order_Menu Foreign Key (Meal_ID) References Menu(meal_ID) On Delete set null,
+    Constraint FK_Delete_Order_Employee Foreign Key (Prepared_by) References Employee(employee_ID) On Delete set null
 )
 
 
@@ -151,6 +156,3 @@ Values
     ('2024-02-10 14:15:00', '2024-02-10 14:45:00', 0, 8, 1, 10.99, 1),
     ('2024-02-10 15:00:00', '2024-02-10 15:30:00', 1, 9, 3, 26.97, 5),
     ('2024-02-10 16:00:00', '2024-02-10 16:30:00', 1, 10, 2, 12.98, 4)
-
-
------------------------------------------------------------
