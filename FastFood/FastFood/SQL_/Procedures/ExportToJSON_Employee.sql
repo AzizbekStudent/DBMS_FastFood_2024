@@ -11,7 +11,7 @@ BEGIN
 -- I don't know What is causing this
 	IF @@ROWCOUNT > 0
 		BEGIN
-			PRINT 'Procedure already executed. Exiting...'; 
+			PRINT 'Procedure already executed. Exiting'; 
 			RETURN; 
 		END
 
@@ -24,12 +24,11 @@ BEGIN
         Age int,
         Salary decimal(10,2),
         HireDate datetime,
-        Image varbinary(max),
         FullTime bit
     );
 
     INSERT INTO @EmpTab
-    SELECT employee_ID, FName, LName, Telephone, Job, Age, Salary, HireDate, Image, FullTime
+    SELECT employee_ID, FName, LName, Telephone, Job, Age, Salary, HireDate, FullTime
     FROM Employee
     WHERE (@FName IS NULL OR FName LIKE CONCAT(@FName, '%'))
         AND (@LName IS NULL OR LName LIKE CONCAT(@LName, '%'))
@@ -46,10 +45,9 @@ BEGIN
 	,Age
 	,Salary
 	,HireDate
-	,Image
 	,FullTime
 	FROM @EmpTab 
 	FOR JSON PATH, ROOT('Employees'), INCLUDE_NULL_VALUES;
 END
 
--- exec udp_Employee_Filter_ToJSON
+exec udp_Employee_Filter_ToJSON

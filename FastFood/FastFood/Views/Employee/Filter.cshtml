@@ -118,26 +118,26 @@
     {
         @if (Model.PageNumber > 1)
         {
-            <a href="@Url.Action("Filter", new { PageNumber = 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">First</a>
-            <a href="@Url.Action("Filter", new { PageNumber = Model.PageNumber - 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Previous</a>
+            <a class="btn btn-secondary m-2" href="@Url.Action("Filter", new { PageNumber = 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">First</a>
+            <a class="btn btn-secondary m-2" href="@Url.Action("Filter", new { PageNumber = Model.PageNumber - 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Previous</a>
         }
 
         @for (int i = 1; i <= Model.TotalCount; i++)
         {
             if (i == Model.PageNumber)
             {
-                <span>@i</span>
+                <span class="btn btn-success  ml-4 mr-4 ">@i</span>
             }
             else
             {
-                <a href="@Url.Action("Filter", new { PageNumber = i, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">@i</a>
+                <a class="btn btn-secondary m-2" href="@Url.Action("Filter", new { PageNumber = i, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">@i</a>
             }
         }
 
         @if (Model.PageNumber < Model.TotalCount)
         {
-            <a href="@Url.Action("Filter", new { PageNumber = Model.PageNumber + 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Next</a>
-            <a href="@Url.Action("Filter", new { PageNumber = Model.TotalCount, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Last</a>
+            <a class="btn btn-secondary m-2" href="@Url.Action("Filter", new { PageNumber = Model.PageNumber + 1, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Next</a>
+            <a class="btn btn-secondary m-2" href="@Url.Action("Filter", new { PageNumber = Model.TotalCount, FName = Model.FName, LName = Model.LName, HireDate = Model.HireDate, PageSize = Model.PageSize, SortField = Model.SortField, SortAsc = Model.SortAsc })">Last</a>
         }
     }
 </div>

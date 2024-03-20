@@ -149,37 +149,39 @@ namespace FastFood.Controllers
         {
             try
             {
-                byte[] imageData = null;
-                if (image != null)
+                if (image != null && image.Length > 0)
                 {
+                    byte[] imageData;
                     using (var memoryStream = new MemoryStream())
                     {
                         await image.CopyToAsync(memoryStream);
                         imageData = memoryStream.ToArray();
-                        emp.Image = imageData;
                     }
+                    emp.Image = imageData;
                 }
-
-
-                if (ModelState.IsValid)
+                else
                 {
-                    var employee = new Employee
-                    {
-                        FName = emp.FName,
-                        LName = emp.LName,
-                        Telephone = emp.Telephone,
-                        Job = emp.Job,
-                        Age = emp.Age,
-                        Salary = emp.Salary,
-                        HireDate = emp.HireDate,
-                        Image = emp.Image,
-                        FullTime = emp.FullTime
-                    };
-
-                    int id = await _EmpRepository.CreateAsync(employee);
-
-                    return RedirectToAction("Index");
+                    emp.Image = null;
                 }
+
+
+                var employee = new Employee
+                {
+                    FName = emp.FName,
+                    LName = emp.LName,
+                    Telephone = emp.Telephone,
+                    Job = emp.Job,
+                    Age = emp.Age,
+                    Salary = emp.Salary,
+                    HireDate = emp.HireDate,
+                    Image = emp.Image,
+                    FullTime = emp.FullTime
+                };
+
+                int id = await _EmpRepository.CreateAsync(employee);
+
+                return RedirectToAction("Index");
+
             }
             catch (Exception ex)
             {
@@ -212,36 +214,36 @@ namespace FastFood.Controllers
             {
                 if (image != null && image.Length > 0)
                 {
+                    byte[] imageData;
                     using (var memoryStream = new MemoryStream())
                     {
                         await image.CopyToAsync(memoryStream);
-                        emp.Image = memoryStream.ToArray();
+                        imageData = memoryStream.ToArray();
                     }
+                    emp.Image = imageData;
                 }
-
-
-                if (ModelState.IsValid)
+                else
                 {
-                    var success = await _EmpRepository.UpdateAsync(emp);
-
-                    if (success > 0)
-                    {
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        return BadRequest("Employee update failed.");
-                    }
+                    emp.Image = null;
                 }
-                    
+
+
+                var success = await _EmpRepository.UpdateAsync(emp);
+
+                if (success > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return BadRequest("Employee update failed.");
+                }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View(emp);
             }
-
-            return View(emp);
         }
 
 

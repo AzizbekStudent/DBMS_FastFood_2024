@@ -93,7 +93,7 @@ namespace FastFood.DAL.Repositories
             parameters.Add("@Amount_in_grams", entity.Amount_in_grams);
             parameters.Add("@Unit", entity.Unit);
             parameters.Add("@IsForVegan", entity.IsForVegan);
-            parameters.Add("@Image", entity.Image);
+            parameters.Add("@Image", entity.Image, DbType.Binary);
 
 
             return await conn.ExecuteAsync(

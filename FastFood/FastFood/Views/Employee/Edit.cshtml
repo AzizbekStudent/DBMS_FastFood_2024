@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Telephone" class="control-label"></label>
-                <input asp-for="Telephone" class="form-control" placeholder="___-__-___-__-   />
+                <input asp-for="Telephone" id="telephoneInput" class="form-control" placeholder="###-##-###-##-##" maxlength="20" />
                 <span asp-validation-for="Telephone" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -60,10 +60,10 @@
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
                 <input type="file" asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <!--<span asp-validation-for="Image" class="text-danger"></span>-->
             </div>
 
-            <div class="EmployeeImage">
+            <div class="EmployeeImage mt-4">
                 @if (Model.Image != null && Model.Image.Length > 0)
                 {
                     string imageBase64 = Convert.ToBase64String(Model.Image);
@@ -81,7 +81,7 @@
                     <input class="form-check-input" asp-for="FullTime" /> @Html.DisplayNameFor(model => model.FullTime)
                 </label>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -94,4 +94,20 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('telephoneInput').addEventListener('input', function (e) {
+            var value = e.target.value.replace(/\D/g, '');
+            var formattedValue = '';
+            // ###-##-###-##-##
+            if (value.length > 0) {
+                formattedValue = value.match(/.{1,2}/g).join('-');
+
+                if (formattedValue.length > 20) {
+                    formattedValue = formattedValue.substring(0, 20);
+                }
+            }
+
+            e.target.value = formattedValue;
+        });
+    </script>
 }

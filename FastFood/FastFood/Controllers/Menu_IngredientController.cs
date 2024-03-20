@@ -1,6 +1,7 @@
 ﻿using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NuGet.Protocol.Core.Types;
 
@@ -89,7 +90,11 @@ namespace FastFood.Controllers
         {
             try
             {
-                
+                if (meal.meal_ID == null || meal.ingredient_ID == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Cannot submit empty form");
+                    return View(meal); 
+                }
 
                 int success = await _MenuIngredientRepository.CreateAsync(meal);
 
@@ -150,6 +155,13 @@ namespace FastFood.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Menu_Ingredients meal)
         {
+
+            if (meal.meal_ID == null || meal.ingredient_ID == null)
+            {
+                ModelState.AddModelError(string.Empty, "Cannot submit empty form");
+                return View(meal); 
+            }
+
             if (id != meal.meal_ID)
             {
                 return NotFound();

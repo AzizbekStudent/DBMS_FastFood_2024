@@ -60,31 +60,36 @@ namespace FastFood.Controllers
         {
                 try
                 {
+                    
+
                     if (image != null && image.Length > 0)
                     {
+                        byte[] imageData;
                         using (var memoryStream = new MemoryStream())
                         {
                             await image.CopyToAsync(memoryStream);
-                            ingredient.Image = memoryStream.ToArray();
+                            imageData = memoryStream.ToArray();
                         }
+                        ingredient.Image = imageData;
                     }
-
-                if (ModelState.IsValid)
+                    else
                     {
-                        var product = new Ingredients
-                        {
-                            Title = ingredient.Title,
-                            Price = ingredient.Price,
-                            Amount_in_grams = ingredient.Amount_in_grams,
-                            Unit = ingredient.Unit,
-                            IsForVegan = ingredient.IsForVegan,
-                            Image = ingredient.Image
-                        };
-
-                        int id = await _IngredientRepository.CreateAsync(product);
-
-                        return RedirectToAction("Index");
+                        ingredient.Image = null;
                     }
+
+                    var product = new Ingredients
+                    {
+                        Title = ingredient.Title,
+                        Price = ingredient.Price,
+                        Amount_in_grams = ingredient.Amount_in_grams,
+                        Unit = ingredient.Unit,
+                        IsForVegan = ingredient.IsForVegan,
+                        Image = ingredient.Image
+                    };
+
+                    int id = await _IngredientRepository.CreateAsync(product);
+
+                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
@@ -118,29 +123,28 @@ namespace FastFood.Controllers
                 {
                     if (image != null && image.Length > 0)
                     {
+                        byte[] imageData;
                         using (var memoryStream = new MemoryStream())
                         {
                             await image.CopyToAsync(memoryStream);
-                            product.Image = memoryStream.ToArray();
+                            imageData = memoryStream.ToArray();
                         }
+                        product.Image = imageData;
                     }
                     else
                     {
-                    product.Image = null;
+                        product.Image = null;
                     }
 
-                if (ModelState.IsValid)
-                    {
-                        var success = await _IngredientRepository.UpdateAsync(product);
+                    var success = await _IngredientRepository.UpdateAsync(product);
 
-                        if (success > 0)
-                        {
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            return BadRequest("Ingredient update failed.");
-                        }
+                    if (success > 0)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return BadRequest("Ingredient update failed.");
                     }
                 }
                 catch (Exception ex)
@@ -148,8 +152,6 @@ namespace FastFood.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                     return View(product);
                 }
-
-            return View(product);
         }
 
 

@@ -62,34 +62,34 @@ namespace FastFood.Controllers
             {
                 if (image != null && image.Length > 0)
                 {
+                    byte[] imageData;
                     using (var memoryStream = new MemoryStream())
                     {
                         await image.CopyToAsync(memoryStream);
-                        meal.Image = memoryStream.ToArray();
+                        imageData = memoryStream.ToArray();
                     }
+                    meal.Image = imageData;
                 }
                 else
                 {
                     meal.Image = null;
                 }
 
-                if (ModelState.IsValid)
+              
+                var product = new Menu
                 {
-                    var product = new Menu
-                    {
-                        Meal_title = meal.Meal_title,
-                        Price = meal.Price,
-                        Size = meal.Size,
-                        TimeToPrepare = meal.TimeToPrepare,
-                        IsForVegan = meal.IsForVegan,
-                        Created_Date = DateTime.Now,
-                        Image = meal.Image
-                    };
+                    Meal_title = meal.Meal_title,
+                    Price = meal.Price,
+                    Size = meal.Size,
+                    TimeToPrepare = meal.TimeToPrepare,
+                    IsForVegan = meal.IsForVegan,
+                    Created_Date = DateTime.Now,
+                    Image = meal.Image
+                };
 
-                    int id = await _MenuRepository.CreateAsync(product);
+                int id = await _MenuRepository.CreateAsync(product);
 
-                    return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -123,29 +123,29 @@ namespace FastFood.Controllers
             {
                 if (image != null && image.Length > 0)
                 {
+                    byte[] imageData;
                     using (var memoryStream = new MemoryStream())
                     {
                         await image.CopyToAsync(memoryStream);
-                        product.Image = memoryStream.ToArray();
+                        imageData = memoryStream.ToArray();
                     }
+                    product.Image = imageData;
                 }
                 else
                 {
                     product.Image = null;
                 }
 
-                if (ModelState.IsValid)
-                {
-                    var success = await _MenuRepository.UpdateAsync(product);
+                
+                var success = await _MenuRepository.UpdateAsync(product);
 
-                    if (success > 0)
-                    {
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        return BadRequest("Meal update failed.");
-                    }
+                if (success > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return BadRequest("Meal update failed.");
                 }
             }
             catch (Exception ex)
@@ -153,8 +153,6 @@ namespace FastFood.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View(product);
             }
-
-            return View(product);
         }
 
         // Delete

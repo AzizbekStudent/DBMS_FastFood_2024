@@ -3,6 +3,7 @@ using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 using System.Xml.Linq;
 
 namespace FastFood.DAL.Repositories
@@ -101,7 +102,7 @@ namespace FastFood.DAL.Repositories
             parameters.Add("@Age", entity.Age);
             parameters.Add("@Salary", entity.Salary);
             parameters.Add("@HireDate", entity.HireDate);
-            parameters.Add("@Image", entity.Image);
+            parameters.Add("@Image", entity.Image, DbType.Binary);
             parameters.Add("@FullTime", entity.FullTime);
 
 
@@ -149,44 +150,55 @@ namespace FastFood.DAL.Repositories
         }
 
         // Exporting XML Filter
-        public string ExportTO_XML( string? fName,  string? lName, DateTime? hireDate )
+        public  string ExportTO_XML( string? fName,  string? lName, DateTime? hireDate )
         {
+            // For avoiding data cut I used
+            // Query function then created string builder
+            // Then I am concateneting each record
             using var conn = new SqlConnection(_connStr);
-            var parameters = new DynamicParameters();
-            parameters.Add("FName", fName);
-            parameters.Add("LName", lName);
-            parameters.Add("HireDate", hireDate);
-
-            parameters.Add(
-                "Results",
-                direction: ParameterDirection.Output,
-                dbType: DbType.String,
-                size: 2000
-                );
-
-            conn.Execute(
+            var results = conn.Query<string>(
                 "udp_Employee_Filter_ToXML",
-                commandType: CommandType.StoredProcedure,
-                param: parameters
-                );
+                new
+                {
+                    FName = fName,
+                    LName = lName,
+                    HireDate = hireDate
+                },
+                commandType: CommandType.StoredProcedure);
 
-            return parameters.Get<string>("Results");
+            StringBuilder xmlStringBuilder = new StringBuilder();
+            foreach (var xmlResult in results)
+            {
+                xmlStringBuilder.Append(xmlResult);
+            }
+
+            return xmlStringBuilder.ToString();
         }
 
         // Exporting JSON Filter
         public string ExportTO_Json( string? fName, string? lName,  DateTime? hireDate )
         {
+            // For avoiding data cut I used
+            // Query function then created string builder
+            // Then I am concateneting each record
             using var conn = new SqlConnection(_connStr);
-            return conn.ExecuteScalar<string>(
+            var results = conn.Query<string>(
                 "udp_Employee_Filter_ToJSON",
                 new
                 {
                     FName = fName,
                     LName = lName,
                     HireDate = hireDate
-                }, commandType: CommandType.StoredProcedure) ?? "";
+                },
+                commandType: CommandType.StoredProcedure);
+
+            StringBuilder jsonStringBuilder = new StringBuilder();
+            foreach (var jsonResult in results)
+            {
+                jsonStringBuilder.Append(jsonResult);
+            }
+
+            return jsonStringBuilder.ToString();
         }
-
-
     }
 }

@@ -98,7 +98,7 @@ namespace FastFood.DAL.Repositories
             parameters.Add("@size", entity.Size);
             parameters.Add("@TimeToPrepare", entity.TimeToPrepare);
             parameters.Add("@IsForVegan", entity.IsForVegan);
-            parameters.Add("@Image", entity.Image);
+            parameters.Add("@Image", entity.Image, DbType.Binary);
 
 
             return await conn.ExecuteAsync(
