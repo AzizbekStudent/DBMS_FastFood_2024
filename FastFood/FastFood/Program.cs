@@ -10,7 +10,7 @@ string? _connStr = config.GetConnectionString("DBMS_FastFood")
     .Replace("|DataDirectory|", builder.Environment.ContentRootPath); ;
 
 
-// Repository initialization
+// Repository initialization Task 2 and 3
 builder.Services.AddScoped<IRepository<Employee>>(
    p =>
    {
@@ -42,12 +42,17 @@ builder.Services.AddScoped<IRepository<Menu_Ingredients>>(
 
 
 
-// Filter injection of interface
+// Filter injection of interface  task 4
 builder.Services.AddScoped<IFilter_Employee>(provider =>
     new EmployeeDapperRepository(_connStr));
 
+// Exporting task 6
 builder.Services.AddScoped<I_Export_Employee>(provider =>
     new EmployeeDapperRepository(_connStr));
+
+// Importing task 7
+builder.Services.AddScoped<I_ImportExport>(provider =>
+    new OrderDapperRepository(_connStr));
 
 
 // Add services to the container.

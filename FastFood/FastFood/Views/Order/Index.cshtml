@@ -8,6 +8,8 @@
 
 <p>
     <a asp-action="Create" class="btn btn-info m-2" >Create New</a>
+    @Html.ActionLink("Export to Json", "ExportToJson", "Order", null, new { @class = "btn btn-success ml-4" })
+    @Html.ActionLink("Import from Json", "ImportFromJson", "Order", null, new { @class = "btn btn-success ml-4" })
 </p>
 <table class="table">
     <thead>

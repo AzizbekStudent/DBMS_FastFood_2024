@@ -2,6 +2,9 @@
 using FastFood.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NuGet.Protocol.Core.Types;
+using System.Text;
+using System.Text.Json;
 
 namespace FastFood.Controllers
 {
@@ -11,11 +14,14 @@ namespace FastFood.Controllers
         private readonly IRepository<Menu> _MenuRepository;
         private readonly IRepository<Employee> _EmpRepository;
 
-        public OrderController(IRepository<Order> orderRepository, IRepository<Menu> menuRepository, IRepository<Employee> empRepository)
+        private readonly I_ImportExport _ExportImportRepo;
+
+        public OrderController(IRepository<Order> orderRepository, IRepository<Menu> menuRepository, IRepository<Employee> empRepository, I_ImportExport exportImportRepo)
         {
             _OrderRepository = orderRepository;
             _MenuRepository = menuRepository;
             _EmpRepository = empRepository;
+            _ExportImportRepo = exportImportRepo;
         }
 
         public async  Task<IActionResult> Index()
@@ -244,6 +250,34 @@ namespace FastFood.Controllers
             {
                 return StatusCode(500, $"Server error {ex.Message}");
             }
+        }
+
+        // Exporting to Json format
+        public IActionResult ExportToJson()
+        {
+            string json = _ExportImportRepo.ExportOrderToJSON();
+            return File(
+                Encoding.UTF8.GetBytes(json),
+                "application/json",
+                $"Orders_{DateTime.Now}.json"
+                );
+        }
+
+        // Importing From Json
+        public IActionResult ImportFromJson()
+        {
+            return View(new List<Order>());
+        }
+
+        [HttpPost]
+        public IActionResult ImportFromJson(IFormFile importFile)
+        {
+            using var stream = importFile.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            string json = reader.ReadToEnd();
+
+            var OrderList = _ExportImportRepo.ImportFromJSON(json);
+            return View(OrderList);
         }
     }
 }

@@ -3,10 +3,12 @@ using FastFood.DAL.Interface;
 using FastFood.DAL.Models;
 using System.Data.SqlClient;
 using System.Data;
+using System.Text;
+using System.Xml.Linq;
 
 namespace FastFood.DAL.Repositories
 {
-    public class OrderDapperRepository : IRepository<Order>
+    public class OrderDapperRepository : IRepository<Order>, I_ImportExport
     {
         private readonly string _connStr;
 
@@ -166,7 +168,73 @@ namespace FastFood.DAL.Repositories
                 );
         }
 
-       
+        // Import from Json
+        public IEnumerable<Order> ImportFromJSON(string json)
+        {
+            // As far as this method returns three selection
+            // I am using QueryMultiple method
+            using var conn = new SqlConnection(_connStr);
+            var multiResult = conn.QueryMultiple(
+                "udp_Order_Menu_Employee_Import",
+                param: new { json = json },
+                 commandType: CommandType.StoredProcedure);
+
+            // Then here I am seperating each result
+            // To be honest program does not need other two lists but I decided to 
+            // Keep them
+            var orders = multiResult.Read<Order>().ToList();
+            var menus = multiResult.Read<Menu>().ToList();
+            var employees = multiResult.Read<Employee>().ToList();
+
+            return orders;
+        }
+
+        // Import from Xml
+        public IEnumerable<Order> ImportFromXml(string xml)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Export to Json
+        public string ExportOrderToJSON()
+        {
+            // For avoiding data cut I used
+            // Query function then created string builder
+            // Then I am concateneting each record
+            using var conn = new SqlConnection(_connStr);
+            var results = conn.Query<string>(
+                "Export_Order_To_Json",
+                commandType: CommandType.StoredProcedure);
+
+            StringBuilder jsonStringBuilder = new StringBuilder();
+            foreach (var jsonResult in results)
+            {
+                jsonStringBuilder.Append(jsonResult);
+            }
+
+            return jsonStringBuilder.ToString();
+        }
+
+        //Export to Xml
+        public string ExportOrderToXML()
+        {
+            // For avoiding data cut I used
+            // Query function then created string builder
+            // Then I am concateneting each record
+            using var conn = new SqlConnection(_connStr);
+            var results = conn.Query<string>(
+                "_",
+                commandType: CommandType.StoredProcedure);
+
+            StringBuilder xmlStringBuilder = new StringBuilder();
+            foreach (var xmlResult in results)
+            {
+                xmlStringBuilder.Append(xmlResult);
+            }
+
+            return xmlStringBuilder.ToString();
+        }
+
 
     }
 }
