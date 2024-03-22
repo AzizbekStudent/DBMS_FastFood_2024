@@ -279,5 +279,33 @@ namespace FastFood.Controllers
             var OrderList = _ExportImportRepo.ImportFromJSON(json);
             return View(OrderList);
         }
+
+        public IActionResult ExportToXml()
+        {
+            string xml = _ExportImportRepo.ExportOrderToXML();
+            return File(
+                Encoding.UTF8.GetBytes(xml),
+                "text/xml",
+                $"Employees_{DateTime.Now}.xml"
+                );
+        }
+
+
+        public IActionResult ImportFromXml()
+        {
+            return View(new List<Order>());
+        }
+
+        [HttpPost]
+        public IActionResult ImportFromXml(IFormFile importFile)
+        {
+            using var stream = importFile.OpenReadStream();
+            using var rdr = new StreamReader(stream);
+            string xml = rdr.ReadToEnd();
+
+            var orders = _ExportImportRepo.ImportFromXml(xml);
+            
+            return View(orders);
+        }
     }
 }

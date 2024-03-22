@@ -93,7 +93,14 @@ namespace FastFood.DAL.Repositories
                 commandType: CommandType.StoredProcedure
                 );
 
-                order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
+                if(order.Meal != null)
+                {
+                    order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
+                }
+                else
+                {
+                    order.TotalCost = 0;
+                }
             }
 
             return orderList;
@@ -116,16 +123,23 @@ namespace FastFood.DAL.Repositories
                 "udp_Menu_Get_By_Id",
                 new { meal_ID = order.Meal_ID },
                 commandType: CommandType.StoredProcedure
-                );
+                ) ?? null;
 
             order.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
             "udp_Employee_Get_ByID",
             new { employeeID = order.Prepared_By },
             commandType: CommandType.StoredProcedure
-            );
+            ) ?? null;
 
-            order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
+            if(order.Meal != null)
+            {
+                order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
 
+            }
+            else
+            {
+                order.TotalCost = 0;
+            }
 
             if (order != null)
                 return order;
@@ -192,7 +206,13 @@ namespace FastFood.DAL.Repositories
         // Import from Xml
         public IEnumerable<Order> ImportFromXml(string xml)
         {
-            throw new NotImplementedException();
+            using var conn = new SqlConnection(_connStr);
+            var orders = conn.Query<Order>(
+                "udp_Order_Menu_Employee_Import_XML",
+                param: new { xml = xml },
+                 commandType: CommandType.StoredProcedure);
+
+            return orders;
         }
 
         // Export to Json
@@ -218,12 +238,9 @@ namespace FastFood.DAL.Repositories
         //Export to Xml
         public string ExportOrderToXML()
         {
-            // For avoiding data cut I used
-            // Query function then created string builder
-            // Then I am concateneting each record
             using var conn = new SqlConnection(_connStr);
             var results = conn.Query<string>(
-                "_",
+                "Export_Order_To_Xml",
                 commandType: CommandType.StoredProcedure);
 
             StringBuilder xmlStringBuilder = new StringBuilder();

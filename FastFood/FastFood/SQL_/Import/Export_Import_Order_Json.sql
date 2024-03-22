@@ -5,6 +5,15 @@ go
 Create or Alter procedure Export_Order_To_Json
 as
 Begin
+
+-- Without this statement my procedure is infinitely called
+-- I don't know What is causing this
+	IF @@ROWCOUNT > 0
+		BEGIN
+			PRINT 'Procedure already executed. Exiting'; 
+			RETURN; 
+		END
+
 	select o.order_ID
 	,o.OrderTime
 	,o.DeliveryTime
@@ -41,14 +50,42 @@ exec Export_Order_To_Json
 -----------------------------------------------
 --------------Importing to Json----------------
 -----------------------------------------------
-Go
+go
 Create or Alter procedure udp_Order_Menu_Employee_Import
 (
-	@json nvarchar(max)
+    @json nvarchar(max)
 )
 as
 Begin
-	-- First I will insert into orders table
+
+	insert into Menu (meal_title, price, size, TimeToPrepare, IsForVegan, created_Date)
+	output inserted.*
+	select MealTitle, Price, Size, TimeToPrepare, IsForVegan, CreatedDate
+	from openjson(@json, N'$.Orders')
+	with(
+		MealTitle VARCHAR(255) '$.Meal.meal_title',
+		Price DECIMAL(10, 2) '$.Meal.price',
+		Size VARCHAR(7) '$.Meal.size',
+		TimeToPrepare TIME '$.Meal.TimeToPrepare',
+		IsForVegan BIT '$.Meal.IsForVegan',
+		CreatedDate DATETIME '$.Meal.created_Date'
+	)
+
+    insert into Employee (FName, LName, Telephone, Job, Age, Salary, HireDate, FullTime)
+	output inserted.*
+	select FName,LName, Telephone, Job, Age, Salary, HireDate, FullTime
+	from openjson(@json, N'$.Orders')
+	with(
+		FName VARCHAR(255) '$.Employee.FName',
+		LName VARCHAR(255) '$.Employee.LName',
+		Telephone VARCHAR(20) '$.Employee.Telephone',
+		Job VARCHAR(255) '$.Employee.Job',
+		Age INT '$.Employee.Age',
+		Salary DECIMAL(10, 2) '$.Employee.Salary',
+		HireDate DATETIME '$.Employee.HireDate',
+		FullTime BIT '$.Employee.FullTime'
+	)
+
 	insert into Orders (OrderTime, DeliveryTime, PaymentStatus, Meal_ID, Amount, Total_Cost, Prepared_by)
 	output inserted.*
 	select OrderTime, DeliveryTime, PaymentStatus, MealID, Amount, TotalCost, EmployeeID 
@@ -63,37 +100,9 @@ Begin
 		TotalCost DECIMAL(10, 2) '$.Total_Cost',
 		EmployeeID INT '$.Employee.employee_ID'
 	)
-
-	-- Next I will insert into Menu table
-	insert into Menu (meal_title, price, size, TimeToPrepare, IsForVegan, created_Date)
-	output inserted.*
-	select MealTitle, Price, Size, TimeToPrepare, IsForVegan, CreatedDate
-	from openjson(@json, N'$.Orders')
-	with(
-		MealTitle VARCHAR(255) '$.Meal.meal_title',
-		Price DECIMAL(10, 2) '$.Meal.price',
-		Size VARCHAR(7) '$.Meal.size',
-		TimeToPrepare TIME '$.Meal.TimeToPrepare',
-		IsForVegan BIT '$.Meal.IsForVegan',
-		CreatedDate DATETIME '$.Meal.created_Date'
-	)
-
-	-- Lastly I will insert into Employee table
-	insert into Employee (FName, LName, Telephone, Job, Age, Salary, HireDate, FullTime)
-	output inserted.*
-	select FName,LName, Telephone, Job, Age, Salary, HireDate, FullTime
-	from openjson(@json, N'$.Orders')
-	with(
-		FName VARCHAR(255) '$.Employee.FName',
-		LName VARCHAR(255) '$.Employee.LName',
-		Telephone VARCHAR(20) '$.Employee.Telephone',
-		Job VARCHAR(255) '$.Employee.Job',
-		Age INT '$.Employee.Age',
-		Salary DECIMAL(10, 2) '$.Employee.Salary',
-		HireDate DATETIME '$.Employee.HireDate',
-		FullTime BIT '$.Employee.FullTime'
-	)
 End
+
+
 
 
 ---------- Sample Data ----------

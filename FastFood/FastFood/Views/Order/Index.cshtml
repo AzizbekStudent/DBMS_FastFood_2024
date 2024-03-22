@@ -6,11 +6,13 @@
 
 <h1>Index</h1>
 
-<p>
+<div class="flex">
     <a asp-action="Create" class="btn btn-info m-2" >Create New</a>
     @Html.ActionLink("Export to Json", "ExportToJson", "Order", null, new { @class = "btn btn-success ml-4" })
     @Html.ActionLink("Import from Json", "ImportFromJson", "Order", null, new { @class = "btn btn-success ml-4" })
-</p>
+    @Html.ActionLink("Export to Xml", "ExportToXml", "Order", null, new { @class = "btn btn-success ml-4" })
+    @Html.ActionLink("Import from Xml", "ImportFromXml", "Order", null, new { @class = "btn btn-success ml-4" })
+</div>
 <table class="table">
     <thead>
         <tr>
