@@ -18,7 +18,7 @@ Create Table Menu (
     TimeToPrepare Time,
     Image VarBinary(MAX),
     IsForVegan BIT,
-    created_Date DateTime
+    created_Date DateTime DEFAULT GETDATE()
 
 	Constraint pk_meal_id Primary key (meal_ID),
 	Constraint chk_size_type Check (size in ('Large', 'Medium', 'Small'))
