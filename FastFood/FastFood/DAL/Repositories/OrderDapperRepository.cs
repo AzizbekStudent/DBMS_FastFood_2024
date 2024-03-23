@@ -188,17 +188,11 @@ namespace FastFood.DAL.Repositories
             // As far as this method returns three selection
             // I am using QueryMultiple method
             using var conn = new SqlConnection(_connStr);
-            var multiResult = conn.QueryMultiple(
-                "udp_Order_Menu_Employee_Import",
+            var orders = conn.Query<Order>(
+                "udp_Order_Menu_Employee_Import_Json",
                 param: new { json = json },
-                 commandType: CommandType.StoredProcedure);
+                commandType: CommandType.StoredProcedure);
 
-            // Then here I am seperating each result
-            // To be honest program does not need other two lists but I decided to 
-            // Keep them
-            var orders = multiResult.Read<Order>().ToList();
-            var menus = multiResult.Read<Menu>().ToList();
-            var employees = multiResult.Read<Employee>().ToList();
 
             return orders;
         }
