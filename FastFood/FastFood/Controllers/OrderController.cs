@@ -2,6 +2,7 @@
 using FastFood.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using NuGet.Protocol.Core.Types;
 using System.Text;
 using System.Text.Json;
@@ -275,7 +276,7 @@ namespace FastFood.Controllers
             {
                 using var stream = importFile.OpenReadStream();
                 using var reader = new StreamReader(stream);
-                string json = reader.ReadToEnd();
+                string json = await reader.ReadToEndAsync();
 
                 var OrderList = await _ExportImportRepo.ImportFromJSON(json);
                 return View(OrderList.ToList());
@@ -307,21 +308,28 @@ namespace FastFood.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportFromXml(IFormFile importFile)
         {
-            if (importFile != null)
+            try
             {
-                using var stream = importFile.OpenReadStream();
-                using var rdr = new StreamReader(stream);
-                string xml = rdr.ReadToEnd();
+                if (importFile != null)
+                {
+                    using var stream = importFile.OpenReadStream();
+                    using var reader = new StreamReader(stream);
+                    string xml = await reader.ReadToEndAsync();
 
-                var orders = await _ExportImportRepo.ImportFromXml(xml);
+                    var OrderList = await _ExportImportRepo.ImportFromXml(xml);
+                    return View(OrderList.ToList());
+                }
+                else
+                {
+                    return View(new List<Order>());
+                }
 
-                return View(orders.ToList());
             }
-            else
+            catch (Exception ex)
             {
+                await Console.Out.WriteLineAsync(ex.Message);
                 return View(new List<Order>());
             }
-            
         }
     }
 }

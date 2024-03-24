@@ -62,7 +62,7 @@ Create or Alter procedure udp_populate_employee_with_xml
 as
 Begin
 -- preventing from looping
-	IF @@ROWCOUNT > 2
+	IF @@ROWCOUNT > 3
 		BEGIN
 			PRINT 'Procedure already executed. Exiting employee'; 
 			RETURN; 
@@ -117,7 +117,7 @@ Create or Alter procedure udp_populate_menu_with_xml
 )
 as
 Begin
-	IF @@ROWCOUNT > 2
+	IF @@ROWCOUNT > 3
 		BEGIN
 			PRINT 'Procedure already executed. Exiting menu'; 
 			RETURN; 
@@ -171,9 +171,9 @@ Create or Alter procedure udp_Order_Menu_Employee_Import_XML
 as
 Begin
 --preventing from looping
-	IF @@ROWCOUNT > 2
+	IF @@ROWCOUNT > 3
 		BEGIN
-			PRINT 'Procedure already executed. Exiting menu'; 
+			PRINT 'Procedure already executed. Exiting Order'; 
 			RETURN; 
 		END
 	
