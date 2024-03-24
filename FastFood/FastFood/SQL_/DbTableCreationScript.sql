@@ -111,9 +111,9 @@ Create Table Menu_Ingredients (
 
     Primary Key (meal_ID, ingredient_ID),
     Foreign Key (meal_ID) References Menu(meal_ID),
-    Foreign Key (ingredient_ID) References Ingredients(ingredient_ID)
-    --Constraint FK_Delete_Menu_Ingredients_Meal Foreign Key (meal_ID) References Menu(meal_ID) On Delete set null,
-    --Constraint FK_Delete_Menu_Ingredients_Product Foreign Key (ingredient_ID) References Ingredients(ingredient_ID) On Delete set null
+    Foreign Key (ingredient_ID) References Ingredients(ingredient_ID),
+    Constraint FK_Delete_Menu_Ingredients_Meal Foreign Key (meal_ID) References Menu(meal_ID) On Delete cascade,
+    Constraint FK_Delete_Menu_Ingredients_Product Foreign Key (ingredient_ID) References Ingredients(ingredient_ID) On Delete cascade
 )
 
 -- Inserting records into the MenuIngredients table
