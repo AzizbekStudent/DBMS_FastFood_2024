@@ -24,7 +24,7 @@ namespace FastFood.Controllers
             _ExportImportRepo = exportImportRepo;
         }
 
-        public async  Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
@@ -269,7 +269,7 @@ namespace FastFood.Controllers
         }
 
         [HttpPost]
-        public IActionResult ImportFromJson(IFormFile importFile)
+        public async Task<IActionResult> ImportFromJson(IFormFile importFile)
         {
             if(importFile != null)
             {
@@ -277,8 +277,8 @@ namespace FastFood.Controllers
                 using var reader = new StreamReader(stream);
                 string json = reader.ReadToEnd();
 
-                var OrderList = _ExportImportRepo.ImportFromJSON(json);
-                return View(OrderList);
+                var OrderList = await _ExportImportRepo.ImportFromJSON(json);
+                return View(OrderList.ToList());
             }
             else
             {
@@ -293,7 +293,7 @@ namespace FastFood.Controllers
             return File(
                 Encoding.UTF8.GetBytes(xml),
                 "text/xml",
-                $"Employees_{DateTime.Now}.xml"
+                $"Orders_{DateTime.Now}.xml"
                 );
         }
 
@@ -305,7 +305,7 @@ namespace FastFood.Controllers
         }
 
         [HttpPost]
-        public IActionResult ImportFromXml(IFormFile importFile)
+        public async Task<IActionResult> ImportFromXml(IFormFile importFile)
         {
             if (importFile != null)
             {
@@ -313,9 +313,9 @@ namespace FastFood.Controllers
                 using var rdr = new StreamReader(stream);
                 string xml = rdr.ReadToEnd();
 
-                var orders = _ExportImportRepo.ImportFromXml(xml);
+                var orders = await _ExportImportRepo.ImportFromXml(xml);
 
-                return View(orders);
+                return View(orders.ToList());
             }
             else
             {

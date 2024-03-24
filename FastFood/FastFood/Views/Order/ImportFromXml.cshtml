@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<FastFood.DAL.Models.Order>
 
 @{
-    ViewData["Title"] = "  Import From Xml";
+    ViewData["Title"] = "ImportFromXml";
 }
 
-<h1>ImportFromXml</h1>
+<h1>Import From Xml</h1>
 @Html.ActionLink("Go to Orders page", "Index", "Order", null, new { @class = "btn btn-success" })
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ImportFromXml" enctype="multipart/form-data">
             <div class="form-group">
-                <lable name="importFile" class="control-label"> XML File</lable>
-                <input name="importFile" class="form-control mt-3" type="file" />
+                <lable name="importFile" class="control-label mt-3 mb-3"> XML File</lable>
+                <input name="importFile" class="form-control mb-3" type="file" />
             </div>
 
             <div class="form-group">
@@ -80,7 +80,7 @@
                 @Html.DisplayFor(modelItem => item.Prepared_By)
             </td>
             <td>
-                    @Html.ActionLink("Details", "Details", new { id = item.order_ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.order_ID }, new { @class = "btn btn-primary" })
             </td>
         </tr>
 }

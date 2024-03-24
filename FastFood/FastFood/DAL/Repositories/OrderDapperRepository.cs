@@ -119,17 +119,31 @@ namespace FastFood.DAL.Repositories
                 new { OrderID = id },
                 commandType: CommandType.StoredProcedure
                 );
-            order.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
+            if(order.Meal_ID != null)
+            {
+                order.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
                 "udp_Menu_Get_By_Id",
                 new { meal_ID = order.Meal_ID },
                 commandType: CommandType.StoredProcedure
-                ) ?? null;
+                );
+            }
+            else
+            {
+                order.Meal = null;
+            }
 
-            order.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
-            "udp_Employee_Get_ByID",
-            new { employeeID = order.Prepared_By },
-            commandType: CommandType.StoredProcedure
-            ) ?? null;
+            if(order.Prepared_By != null)
+            {
+               order.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
+               "udp_Employee_Get_ByID",
+               new { employeeID = order.Prepared_By },
+               commandType: CommandType.StoredProcedure
+               );
+            }
+            else
+            {
+                order.Staff = null;
+            }
 
             if(order.Meal != null)
             {
@@ -199,30 +213,77 @@ namespace FastFood.DAL.Repositories
         }
 
         // Import from Json
-        public IEnumerable<Order> ImportFromJSON(string json)
+        public async Task<IEnumerable<Order>> ImportFromJSON(string json)
         {
             // As far as this method returns three selection
             // I am using QueryMultiple method
             using var conn = new SqlConnection(_connStr);
-            var orders = conn.Query<Order>(
+            var orders =await  conn.QueryAsync<Order>(
                 "udp_Order_Menu_Employee_Import_Json",
                 param: new { json = json },
                 commandType: CommandType.StoredProcedure);
 
+            if (orders == null) return new List<Order>();
+            foreach (var order in orders)
+            {
+                order.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
+                "udp_Menu_Get_By_Id",
+                new { meal_ID = order.Meal_ID },
+                commandType: CommandType.StoredProcedure
+                );
+
+                order.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
+                "udp_Employee_Get_ByID",
+                new { employeeID = order.Prepared_By },
+                commandType: CommandType.StoredProcedure
+                );
+
+                if (order.Meal != null)
+                {
+                    order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
+                }
+                else
+                {
+                    order.TotalCost = 0;
+                }
+            }
 
             return orders;
         }
 
         // Import from Xml
-        public IEnumerable<Order> ImportFromXml(string xml)
+        public async Task<IEnumerable<Order>> ImportFromXml(string xml)
         {
             using var conn = new SqlConnection(_connStr);
-            int commandTimeoutSeconds = 120;
-            var orders = conn.Query<Order>(
+            var orders = await conn.QueryAsync<Order>(
                 "udp_Order_Menu_Employee_Import_XML",
                 param: new { xml = xml },
-                commandType: CommandType.StoredProcedure,
-                commandTimeout: commandTimeoutSeconds);
+                commandType: CommandType.StoredProcedure);
+
+            if (orders == null) return new List<Order>();
+            foreach (var order in orders)
+            {
+                order.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
+                "udp_Menu_Get_By_Id",
+                new { meal_ID = order.Meal_ID },
+                commandType: CommandType.StoredProcedure
+                );
+
+                order.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
+                "udp_Employee_Get_ByID",
+                new { employeeID = order.Prepared_By },
+                commandType: CommandType.StoredProcedure
+                );
+
+                if (order.Meal != null)
+                {
+                    order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
+                }
+                else
+                {
+                    order.TotalCost = 0;
+                }
+            }
 
             return orders;
         }

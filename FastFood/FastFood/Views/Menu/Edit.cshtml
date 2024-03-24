@@ -49,6 +49,7 @@
             <div class="MenuImage">
                 @if (Model.Image != null && Model.Image.Length > 0)
                 {
+                    <p>This picture will be deleted</p>
                     string imageBase64 = Convert.ToBase64String(Model.Image);
                     string imageUrl = $"data:image;base64,{imageBase64}";
                     <img src="@imageUrl" alt="Ingredient Image" style="width: 400px; height : 400px ; margin-bottom : 20px" />
@@ -60,7 +61,7 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsForVegan" /> @Html.DisplayNameFor(model => model.IsForVegan)
+                    <input class="form-check-input mt-3 mb-3" asp-for="IsForVegan" style="transform: scale(1.8);  margin-right: 10px;" /> @Html.DisplayNameFor(model => model.IsForVegan)
                 </label>
             </div>
             <div class="form-group">

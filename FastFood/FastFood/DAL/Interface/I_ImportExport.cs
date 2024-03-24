@@ -8,8 +8,8 @@ namespace FastFood.DAL.Interface
 
         string ExportOrderToJSON();
 
-        IEnumerable<Order> ImportFromXml(string xml);
+        Task<IEnumerable<Order>> ImportFromXml(string xml);
 
-        IEnumerable<Order> ImportFromJSON(string json);
+        Task<IEnumerable<Order>> ImportFromJSON(string json);
     }
 }

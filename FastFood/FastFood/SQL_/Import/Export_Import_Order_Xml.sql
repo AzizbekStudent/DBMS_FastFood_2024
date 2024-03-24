@@ -171,7 +171,7 @@ Create or Alter procedure udp_Order_Menu_Employee_Import_XML
 as
 Begin
 --preventing from looping
-	IF @@ROWCOUNT > 1
+	IF @@ROWCOUNT > 2
 		BEGIN
 			PRINT 'Procedure already executed. Exiting menu'; 
 			RETURN; 
