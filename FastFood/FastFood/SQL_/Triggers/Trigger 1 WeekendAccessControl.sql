@@ -1,5 +1,5 @@
 ﻿-- Create trigger to disallow operations on Menu table during weekends
-CREATE TRIGGER WeekendAccessControl_Menu
+create or alter TRIGGER WeekendAccessControl_Menu
 ON Menu
 FOR INSERT, UPDATE, DELETE
 AS

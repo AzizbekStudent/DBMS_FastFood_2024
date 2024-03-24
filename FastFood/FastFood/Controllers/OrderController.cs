@@ -216,7 +216,6 @@ namespace FastFood.Controllers
                 return View(order);
             }
 
-            return View(order);
         }
 
 
@@ -272,14 +271,22 @@ namespace FastFood.Controllers
         [HttpPost]
         public IActionResult ImportFromJson(IFormFile importFile)
         {
-            using var stream = importFile.OpenReadStream();
-            using var reader = new StreamReader(stream);
-            string json = reader.ReadToEnd();
+            if(importFile != null)
+            {
+                using var stream = importFile.OpenReadStream();
+                using var reader = new StreamReader(stream);
+                string json = reader.ReadToEnd();
 
-            var OrderList = _ExportImportRepo.ImportFromJSON(json);
-            return View(OrderList);
+                var OrderList = _ExportImportRepo.ImportFromJSON(json);
+                return View(OrderList);
+            }
+            else
+            {
+                return View(new List<Order>());
+            }
         }
 
+        // Exporting into xml file
         public IActionResult ExportToXml()
         {
             string xml = _ExportImportRepo.ExportOrderToXML();
@@ -291,6 +298,7 @@ namespace FastFood.Controllers
         }
 
 
+        // Import From XML
         public IActionResult ImportFromXml()
         {
             return View(new List<Order>());
@@ -299,13 +307,21 @@ namespace FastFood.Controllers
         [HttpPost]
         public IActionResult ImportFromXml(IFormFile importFile)
         {
-            using var stream = importFile.OpenReadStream();
-            using var rdr = new StreamReader(stream);
-            string xml = rdr.ReadToEnd();
+            if (importFile != null)
+            {
+                using var stream = importFile.OpenReadStream();
+                using var rdr = new StreamReader(stream);
+                string xml = rdr.ReadToEnd();
 
-            var orders = _ExportImportRepo.ImportFromXml(xml);
+                var orders = _ExportImportRepo.ImportFromXml(xml);
+
+                return View(orders);
+            }
+            else
+            {
+                return View(new List<Order>());
+            }
             
-            return View(orders);
         }
     }
 }

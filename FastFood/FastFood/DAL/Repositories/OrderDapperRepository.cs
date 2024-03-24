@@ -152,17 +152,33 @@ namespace FastFood.DAL.Repositories
         {
             using var conn = new SqlConnection(_connStr);
 
-            entity.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
-                "udp_Menu_Get_By_Id",
-                new { meal_ID = entity.Meal_ID },
+            // Preventing from null request
+            if (entity.Meal_ID != null)
+            {
+                entity.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
+               "udp_Menu_Get_By_Id",
+               new { meal_ID = entity.Meal_ID },
+               commandType: CommandType.StoredProcedure
+               );
+            }
+            else
+            {
+                entity.Meal = null;
+            }
+
+            // Preventing from null request
+            if (entity.Prepared_By != null)
+            {
+                entity.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
+                "udp_Employee_Get_ByID",
+                new { employeeID = entity.Prepared_By },
                 commandType: CommandType.StoredProcedure
                 );
-
-            entity.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
-            "udp_Employee_Get_ByID",
-            new { employeeID = entity.Prepared_By },
-            commandType: CommandType.StoredProcedure
-            );
+            }
+            else
+            {
+                entity.Staff = null;
+            }
 
             var parameters = new DynamicParameters();
 
@@ -201,10 +217,12 @@ namespace FastFood.DAL.Repositories
         public IEnumerable<Order> ImportFromXml(string xml)
         {
             using var conn = new SqlConnection(_connStr);
+            int commandTimeoutSeconds = 120;
             var orders = conn.Query<Order>(
                 "udp_Order_Menu_Employee_Import_XML",
                 param: new { xml = xml },
-                 commandType: CommandType.StoredProcedure);
+                commandType: CommandType.StoredProcedure,
+                commandTimeout: commandTimeoutSeconds);
 
             return orders;
         }

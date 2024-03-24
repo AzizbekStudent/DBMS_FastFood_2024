@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<FastFood.DAL.Models.Order>
 
 @{
-    ViewData["Title"] = "Import From Xml";
+    ViewData["Title"] = "  Import From Xml";
 }
 
 <h1>ImportFromXml</h1>
@@ -10,8 +10,8 @@
     <div class="col-md-4">
         <form asp-action="ImportFromXml" enctype="multipart/form-data">
             <div class="form-group">
-                <lable name="importFile" class="control-label"> JSON File</lable>
-                <input name="importFile" class="form-control" type="file" />
+                <lable name="importFile" class="control-label"> XML File</lable>
+                <input name="importFile" class="form-control mt-3" type="file" />
             </div>
 
             <div class="form-group">
@@ -80,9 +80,7 @@
                 @Html.DisplayFor(modelItem => item.Prepared_By)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Details", "Details", new { id = item.order_ID }) |
             </td>
         </tr>
 }
