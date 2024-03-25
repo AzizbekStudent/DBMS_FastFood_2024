@@ -38,7 +38,7 @@
                 @Html.DisplayNameFor(model => model.PaymentStatus)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Meal_ID)
+                @Html.DisplayNameFor(model => model.Meal.Meal_title)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Amount)
@@ -47,7 +47,7 @@
                 @Html.DisplayNameFor(model => model.TotalCost)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Prepared_By)
+                @Html.DisplayNameFor(model => model.Staff.FName)
             </th>
             <th></th>
         </tr>
@@ -68,7 +68,7 @@
                 @Html.DisplayFor(modelItem => item.PaymentStatus)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Meal_ID)
+                @Html.DisplayFor(modelItem => item.Meal.Meal_title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Amount)
@@ -77,7 +77,7 @@
                 @Html.DisplayFor(modelItem => item.TotalCost)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Prepared_By)
+                @Html.DisplayFor(modelItem => item.Staff.FName)
             </td>
             <td>
                     @Html.ActionLink("Details", "Details", new { id = item.order_ID }, new { @class = "btn btn-primary" })

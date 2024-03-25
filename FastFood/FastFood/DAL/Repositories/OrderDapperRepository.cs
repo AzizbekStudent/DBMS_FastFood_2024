@@ -217,12 +217,10 @@ namespace FastFood.DAL.Repositories
         {
             try
             {
-                // As far as this method returns three selection
-                // I am using QueryMultiple method
                 using var conn = new SqlConnection(_connStr);
                 var orders = await conn.QueryAsync<Order>(
                     "udp_Order_Menu_Employee_Import_Json",
-                    param: new { json = json },
+                    new { json = json },
                     commandType: CommandType.StoredProcedure);
 
                 if (orders == null) return new List<Order>();
@@ -239,23 +237,12 @@ namespace FastFood.DAL.Repositories
                     new { employeeID = order.Prepared_By },
                     commandType: CommandType.StoredProcedure
                     );
-
-                    if (order.Meal != null)
-                    {
-                        order.TotalCost = (order.Meal.Price * (decimal)order.Amount);
-                    }
-                    else
-                    {
-                        order.TotalCost = 0;
-                    }
                 }
-
                 return orders.ToList();
             }
             catch (Exception ex)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
-
+                Console.WriteLine(ex.Message);
                 return  new List<Order>(); ;
             }
         }
@@ -265,15 +252,29 @@ namespace FastFood.DAL.Repositories
         {
             try
             {
-                // As far as this method returns three selection
-                // I am using QueryMultiple method
                 using var conn = new SqlConnection(_connStr);
                 var orders = await conn.QueryAsync<Order>(
                     "udp_Order_Menu_Employee_Import_XML",
-                    param: new { xml = xml },
+                    new { xml = xml },
                     commandType: CommandType.StoredProcedure);
 
                 if (orders == null) return new List<Order>();
+                foreach (var order in orders)
+                {
+                    order.Meal = await conn.QueryFirstOrDefaultAsync<Menu>(
+                    "udp_Menu_Get_By_Id",
+                    new { meal_ID = order.Meal_ID },
+                    commandType: CommandType.StoredProcedure
+                    );
+
+                    order.TotalCost = (decimal)(order.Meal.Price * order.Amount);
+
+                    order.Staff = await conn.QueryFirstOrDefaultAsync<Employee>(
+                    "udp_Employee_Get_ByID",
+                    new { employeeID = order.Prepared_By },
+                    commandType: CommandType.StoredProcedure
+                    );
+                }
 
                 return orders;
             }
