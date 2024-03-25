@@ -210,11 +210,10 @@ namespace FastFood.Controllers
             return View(meal);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmation(int id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmation(int mealId, int ingredientId)
         {
-            var meal = await _MenuIngredientRepository.GetByIdAsync(id);
+            var meal = await _MenuIngredientRepository.GetByIdAsync(mealId);
             if (meal == null)
             {
                 return NotFound();
@@ -222,12 +221,21 @@ namespace FastFood.Controllers
 
             try
             {
+                meal.ingredient_ID = ingredientId;
                 await _MenuIngredientRepository.DeleteAsync(meal);
-                return RedirectToAction("Index");
+
+                var MEAL_ = await _MenuIngredientRepository.GetByIdAsync(mealId);
+                if (MEAL_ != null)
+                    return RedirectToAction("Delete", new { id = mealId });
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Server error {ex.Message}");
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Delete", new { id = mealId });
             }
         }
 

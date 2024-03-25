@@ -21,17 +21,41 @@
             Meal Ingredients list
         </dt>
         <dd class="col-sm-10">
-            <select id="ingredientDropdown" class="form-control" onchange="updateIngredient()">
-                @foreach (var ingredient in Model.IngredinetList)
-                {
-                    <option value="@ingredient.ingredient_ID">@ingredient.Title</option>
-                }
-            </select>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ingredient ID</th>
+                        <th>Ingredient Title</th>
+                        <th>Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ingredient in Model.IngredinetList)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => ingredient.ingredient_ID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => ingredient.Title)
+                            </td>
+                            <td>
+                                <form asp-action="DeleteConfirmation" method="post">
+                                    <input type="hidden" name="mealId" value="@Model.meal_ID" />
+                                    <input type="hidden" name="ingredientId" value="@ingredient.ingredient_ID" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <a asp-action="Index">Back to List</a>
 </div>
+
+
+
+
