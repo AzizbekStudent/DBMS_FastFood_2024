@@ -7,6 +7,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace FastFood.Controllers
 {
+    // Students ID: 00013836, 00014725, 00014896
     public class Menu_IngredientController : Controller
     {
         private readonly IRepository<Menu_Ingredients> _MenuIngredientRepository;
@@ -74,8 +75,8 @@ namespace FastFood.Controllers
                     Text = $"{i.Title}"
                 }).ToList();
 
-
-                return View();
+                var meal = new Menu_Ingredients();
+                return View(meal);
             }
             catch (Exception ex)
             {

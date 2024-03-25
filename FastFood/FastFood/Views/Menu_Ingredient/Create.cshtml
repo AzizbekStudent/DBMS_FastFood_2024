@@ -1,4 +1,5 @@
-﻿@model FastFood.DAL.Models.Menu_Ingredients
+﻿<!-- Students ID: 00013836, 00014725, 00014896-->
+@model FastFood.DAL.Models.Menu_Ingredients
 
 @{
     ViewData["Title"] = "Create";
@@ -24,8 +25,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="meal_ID" class="control-label">Meal</label>
                 <select asp-for="meal_ID" id="Meal_ID" class="form-control">
                     <option value="">Select Meal</option>
@@ -37,7 +37,7 @@
                 <span asp-validation-for="meal_ID" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label asp-for="ingredient_ID" class="control-label">Meal</label>
                 <select asp-for="ingredient_ID" id="ingredient_ID" class="form-control">
                     <option value="">Select Meal</option>
@@ -49,9 +49,10 @@
                 <span asp-validation-for="ingredient_ID" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mt-5">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
         </form>
     </div>
 </div>
@@ -61,5 +62,9 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+
