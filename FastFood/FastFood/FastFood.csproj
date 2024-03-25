@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="AppData\" />
+    <Folder Include="SQL_\Users\" />
     <Folder Include="SQL_\Procedures\" />
   </ItemGroup>
 

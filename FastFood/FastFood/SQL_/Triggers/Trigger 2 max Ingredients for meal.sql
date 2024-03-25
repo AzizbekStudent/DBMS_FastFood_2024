@@ -1,4 +1,5 @@
-﻿CREATE TRIGGER CheckMenuIngredients
+﻿-- Students ID: 00013836   00014725   00014896
+CREATE TRIGGER CheckMenuIngredients
 ON Menu_Ingredients
 AFTER INSERT, UPDATE
 AS

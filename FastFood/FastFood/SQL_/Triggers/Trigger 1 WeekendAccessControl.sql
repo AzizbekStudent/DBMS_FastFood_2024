@@ -1,4 +1,5 @@
-﻿-- Create trigger to disallow operations on Menu table during weekends
+﻿-- Students ID: 00013836   00014725   00014896
+-- Create trigger to disallow operations on Menu table during weekends
 create or alter TRIGGER WeekendAccessControl_Menu
 ON Menu
 FOR INSERT, UPDATE, DELETE
