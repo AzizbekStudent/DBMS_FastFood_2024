@@ -1,0 +1,69 @@
+﻿<!-- Students ID: 00013836, 00014725, 00014896-->
+@model FastFood.DAL.Models.Ingredients
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Ingredients</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ingredient_ID)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ingredient_ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Amount_in_grams)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Amount_in_grams)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Unit)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Unit)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsForVegan)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsForVegan)
+        </dd>
+    </dl>
+
+    <div class="IngredientImage">
+        @if (Model.Image != null && Model.Image.Length > 0)
+        {
+            string imageBase64 = Convert.ToBase64String(Model.Image);
+            string imageUrl = $"data:image;base64,{imageBase64}";
+            <img src="@imageUrl" alt="Ingredient Image" style="width: 400px; height : 400px ; margin-bottom : 20px" />
+        }
+        else
+        {
+            <span>No image available</span>
+        }
+    </div>
+
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.ingredient_ID  }) |
+    <a asp-action="Index">Back to List</a>
+</div>

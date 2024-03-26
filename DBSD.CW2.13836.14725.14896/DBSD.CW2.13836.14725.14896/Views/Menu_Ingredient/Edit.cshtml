@@ -1,0 +1,84 @@
+﻿<!-- Students ID: 00013836, 00014725, 00014896-->
+@model FastFood.DAL.Models.Menu_Ingredients
+
+@{
+    ViewData["Title"] = "Edit";
+
+    var mealOptions = ViewBag.MealOptions as List<SelectListItem>;
+    if (mealOptions == null)
+    {
+        mealOptions = new List<SelectListItem>();
+    }
+
+    var ingredientOptions = ViewBag.ingredientOptions as List<SelectListItem>;
+    if (ingredientOptions == null)
+    {
+        ingredientOptions = new List<SelectListItem>();
+    }
+}
+
+<h1>Edit</h1>
+
+<h4>Menu_Ingredients</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="meal_ID" class="control-label"></label>
+                <input asp-for="meal_ID" class="form-control" readonly />
+                <option value="">@Model.Meal.Meal_title</option>
+                <span asp-validation-for="meal_ID" class="text-danger"></span>
+            </div>
+
+        <dd class="col-sm-10">
+            <select id="ingredientDropdown" class="form-control" readonly>
+                    @foreach (var ingredient in Model.IngredinetList)
+                    {
+                    <option value="@ingredient.ingredient_ID">@ingredient.Title</option>
+                    }
+            </select>
+        </dd>
+
+
+            <div class="form-group">
+                <label asp-for="oldingredient_ID" class="control-label">Meal</label>
+                <select asp-for="oldingredient_ID" id="oldingredient_ID" class="form-control">
+                    <option value="">Select Old Ingredient</option>
+                    @foreach (var item in ingredientOptions)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="oldingredient_ID" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="ingredient_ID" class="control-label">Meal</label>
+                <select asp-for="ingredient_ID" id="ingredient_ID" class="form-control">
+                    <option value="">Select New Ingredient</option>
+                    @foreach (var item in ingredientOptions)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="ingredient_ID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
