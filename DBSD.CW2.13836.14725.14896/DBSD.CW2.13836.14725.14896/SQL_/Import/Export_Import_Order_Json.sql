@@ -187,9 +187,21 @@ Begin
         INSERT INTO @EmpResult (old_id, new_id)
         EXEC udp_populate_employee_from_import @json_e = @json
 
+		-- For avoiding conflicts with logging trigger
+		declare @InsertedOrders table (
+            order_ID INT,
+            OrderTime DATETIME,
+            DeliveryTime DATETIME,
+            PaymentStatus BIT,
+            Meal_ID INT,
+            Amount INT,
+            Total_Cost DECIMAL(10, 2),
+            Prepared_by INT
+        );
+
         -- Orders table 
         INSERT INTO Orders (OrderTime, DeliveryTime, PaymentStatus, Meal_ID, Amount, Total_Cost, Prepared_by)
-        OUTPUT inserted.*
+        OUTPUT inserted.* into @InsertedOrders
         SELECT OrderTime, DeliveryTime, PaymentStatus, m.new_id, Amount, Total_Cost, e.new_id 
         FROM OPENJSON(@json, N'$.Orders')
         WITH (
@@ -204,6 +216,9 @@ Begin
         ) AS OrdersJson
         JOIN @MealResult m ON m.old_id = OrdersJson.MealID 
         JOIN @EmpResult e ON e.old_id = OrdersJson.EmployeeID 
+
+		select * from @InsertedOrders
+
     END TRY
     BEGIN CATCH
         PRINT 'Error occurred in Orders import process: ' + ERROR_MESSAGE();

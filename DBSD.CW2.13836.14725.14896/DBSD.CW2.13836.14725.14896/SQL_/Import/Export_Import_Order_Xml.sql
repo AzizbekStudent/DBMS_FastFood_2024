@@ -203,9 +203,21 @@ Begin
 		insert into @Emp_Result (old_id, new_id)
 		exec udp_populate_employee_with_xml @xml_e = @xml
 
+		-- For avoiding conflicts with logging trigger
+		declare @InsertedOrders table (
+            order_ID INT,
+            OrderTime DATETIME,
+            DeliveryTime DATETIME,
+            PaymentStatus BIT,
+            Meal_ID INT,
+            Amount INT,
+            Total_Cost DECIMAL(10, 2),
+            Prepared_by INT
+        );
+
 		-- Insert Order
 		insert into Orders(OrderTime, DeliveryTime, PaymentStatus, Meal_ID, Amount, Total_Cost, Prepared_by)
-		output inserted.*
+		output inserted.* into @InsertedOrders
 		select OrderTime, DeliveryTime, PaymentStatus, m.new_id, Amount, Total_Cost, e.new_id
 		from openxml(@DocHandle_o, '/Orders/order', 1)
 		with(
@@ -220,6 +232,8 @@ Begin
 		)
 		Join @MealResult m on m.old_id = meal_ID 
 		Join @Emp_Result e on e.old_id = employee_ID 
+
+		select * from @InsertedOrders
 
 		EXEC sp_xml_removedocument @DocHandle_o;
 	End try
